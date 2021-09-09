@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnReshWebApp", "AnReshWebApp.csproj", "{2EC16262-557B-413D-80B0-AB0F799DAC5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnReshWebApp.Tests", "..\AnReshWebApp.Tests\AnReshWebApp.Tests.csproj", "{2F357083-44D5-42D0-BB31-624881492EFE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2EC16262-557B-413D-80B0-AB0F799DAC5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EC16262-557B-413D-80B0-AB0F799DAC5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EC16262-557B-413D-80B0-AB0F799DAC5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EC16262-557B-413D-80B0-AB0F799DAC5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F357083-44D5-42D0-BB31-624881492EFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F357083-44D5-42D0-BB31-624881492EFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F357083-44D5-42D0-BB31-624881492EFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F357083-44D5-42D0-BB31-624881492EFE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FB184B47-A56F-4337-A365-9FB51B8326A0}
+	EndGlobalSection
+EndGlobal
