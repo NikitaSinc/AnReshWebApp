@@ -1,0 +1,36 @@
+﻿@model IEnumerable<AnReshWebApp.Models.Department>
+
+@{
+    ViewBag.Title = "DepartmentForm";
+}
+
+<h2>@Html.DropDownList("TableSelection", new SelectList(new string[] { "Отделы", "Работники" }), "Выберите таблицу") </h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            Отдел:
+        </th>
+        <th>
+            Действия:
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.ActionLink("Изменить", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Удалить", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+    <tr>
+        <td>
+            @Html.ActionLink("Добавить", "Create")
+        </td>
+    </tr>
+</table>
