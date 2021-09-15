@@ -11,7 +11,6 @@ namespace AnReshWebApp.Models
 
     public interface IEmployeeRepository : IRepository<Employee>
     {
-
     }
 
     public class EmployeeRepository : IEmployeeRepository
@@ -31,7 +30,7 @@ namespace AnReshWebApp.Models
         {
             using (var db = new MySqlConnection(connectionString))
             {
-                var result = await db.QueryAsync<Employee>("SELECT * FROM Department");
+                var result = await db.QueryAsync<Employee>("SELECT * FROM Employee");
                 return result.ToList();
             }
 
@@ -41,7 +40,7 @@ namespace AnReshWebApp.Models
         {
             using (var db = new MySqlConnection(connectionString))
             {
-                var sqlQuery = "INSERT INTO Department (Name) VALUES(@Name)";
+                var sqlQuery = "INSERT INTO Employee (Full_name, Id_department, Salary) VALUES(@Full_name, @Id_department, @Salary)";
                 var result = await db.ExecuteAsync(sqlQuery, entity);
                 return result;
             }
@@ -52,7 +51,7 @@ namespace AnReshWebApp.Models
         {
             using (var db = new MySqlConnection(connectionString))
             {
-                var sqlQuery = "UPDATE Department SET Name = @Name WHERE Id = @Id";
+                var sqlQuery = "UPDATE Employee SET Full_name = @Full_name, Id_department=@Id_department, Salary=@Salary WHERE Id = @Id";
                 var result = await db.ExecuteAsync(sqlQuery, entity);
                 return result;
             }
@@ -62,7 +61,7 @@ namespace AnReshWebApp.Models
         {
             using (var db = new MySqlConnection(connectionString))
             {
-                var sqlQuery = "DELETE FROM Department WHERE Id = @id";
+                var sqlQuery = "DELETE FROM Employee WHERE Id = @id";
                 var result = await db.ExecuteAsync(sqlQuery, new { id });
                 return result;
             }

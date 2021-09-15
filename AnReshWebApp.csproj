@@ -229,9 +229,16 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Department\DepartmentForm.cshtml" />
     <Content Include="Views\Employee\EmployeeForm.cshtml" />
-    <Content Include="Views\Home\WorkWithData.cshtml" />
+    <Content Include="Views\Home\_WorkWithData.cshtml" />
+    <Content Include="Views\Creation.cshtml" />
+    <Content Include="Views\Department\CreationPage.cshtml" />
+    <Content Include="Views\Department\EditPage.cshtml" />
+    <Content Include="Views\Employee\EditPage.cshtml" />
+    <Content Include="Views\Employee\CreationPage.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\Redirect\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

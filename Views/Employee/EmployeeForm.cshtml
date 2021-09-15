@@ -2,45 +2,53 @@
 
 @{
     ViewBag.Title = "EmployeeForm";
-    Layout = "~/Views/Department/DepartmentForm.cshtml";
+    Layout = "~/Views/Home/_WorkWithData.cshtml";
 }
 
-<h2>EmployeeForm</h2>
+<h2>Сотрудники</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Full_name)
+            ФИО:
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Department_id)
+            Департамент:
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Salary)
+            Заработная плата:
+        </th>
+        <th>
+            Операции:
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Full_name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Department_id)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Salary)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
-
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Full_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_department)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Salary)
+            </td>
+            <td>
+                @Html.ActionLink("Изменить", "EditPage", new { id = item.Id }) |
+                @Html.ActionLink("Удалить", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+<tr>
+    <td>
+        @Html.ActionLink("Добавить", "CreationPage")
+    </td>
+    <td></td>
+    <td></td>
+    <td></td>
+</tr>
 </table>

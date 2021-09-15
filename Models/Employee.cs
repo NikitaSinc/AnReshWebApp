@@ -9,7 +9,7 @@ namespace AnReshWebApp.Models
     {
         public int Id { get; set; }
         public string Full_name { get; set; }
-        public int Department_id { get; set; }
+        public int Id_department{ get; set; }
         public int Salary { get; set; }
     }
 }
