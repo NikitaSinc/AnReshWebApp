@@ -17,7 +17,7 @@ namespace AnReshWebApp.Models
 
     public class DepartmentRepository : IDepartmentRepository
     {
-        private string connectionString = "Server=127.0.0.1;Database=anreshprobation;Uid=root;Pwd=40544054nikita;";
+        private string connectionString = "Server=127.0.0.1;Database=anreshprobation;Uid=anreshuser;Pwd=anreshuser;";
 
         public async Task<Department> GetByIdAsync(int id)
         {
