@@ -1,6 +1,9 @@
 create database if not exists AnReshProbation;
 
 use AnReshProbation;
+CREATE USER if not exists 'anreshuser'@'%' IDENTIFIED BY 'anreshuser';
+GRANT ALL privileges ON anreshprobation.* TO 'anreshuser'@'%';
+
 create table if not exists Department (
 	Id int(3) not null auto_increment,
 	Name char(100) not null,
