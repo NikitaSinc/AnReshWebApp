@@ -1,40 +1,53 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8;" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - приложение ASP.NET</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <title>Стажировка в аналитических решениях</title>
+    @Styles.Render("~/Content/reset.css")
+    @Styles.Render("~/Content/Site.css")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
+    <header class="header">
+        
+        <nav class="nav__bar">
+                <ol class="nav__list">
 
-            <a href="https://anresh.ru" class="navbar-brand">Стажировка в аналитических решениях</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Работа с файлом", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Работа с БД", "DepartmentForm", "Department")</li>
-                </ul>
+                    <li class="nav__list__item"> <a href="/Home/Index/">Работа с файлом</a></li>
+
+                    <li class="nav__list__item">Работа с данными
+                        <ol>
+                            <li class="nav__list__item__sec" ><a href="/Department/DepartmentForm/">Отделы</a></li>
+
+                            <li class="nav__list__item__sec" ><a href="/Employee/EmployeeForm/">Сотрудники</a></li>
+                        </ol>
+                    </li>
+                </ol class="nav__list">
+        </nav>
+
+        <div class="nav__top">
+            <div class="nav__top__user">
+                <p>
+                    <img src="~/Images/login__pic.png" alt="login" class="login__pic" />
+                    <a href"#">Заглушка Пользователя</a>
+                </p>
             </div>
         </div>
-    </div>
-    <div class="container body-content">
+        
+        <div class="header__logo">            
+            <a href="https://otc.ru" class="header__logo__link">
+                <img src="~/Images/header__logo__back.png" alt="OTC" class="header__logo__back" />
+
+                <img src="~/Images/header__logo__otc.png" alt="OTC" class="header__logo__otc" />
+            </a>
+        </div>
+    </header>
+
+<div class="wrapper__content__form">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - мое приложение ASP.NET</p>
-        </footer>
-    </div>
+
+</div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

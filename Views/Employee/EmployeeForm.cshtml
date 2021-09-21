@@ -2,32 +2,38 @@
 
 @{
     ViewBag.Title = "EmployeeForm";
-    Layout = "~/Views/Home/_WorkWithData.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<h1>Стажировка в Аналитических Решениях</h1>
 <h2>Сотрудники</h2>
 
 
 <table class="table">
     <tr>
         <th>
-            ФИО:
+            ID
         </th>
         <th>
-            Департамент:
+            ФИО
         </th>
         <th>
-            Заработная плата:
+            Департамент
         </th>
         <th>
-            Операции:
+            Заработная плата
         </th>
-        <th></th>
+        <th>
+            Операции
+        </th>
+
     </tr>
 
     @foreach (var item in Model)
     {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Full_name)
             </td>
@@ -45,10 +51,19 @@
     }
 <tr>
     <td>
+        ...
+    </td>
+    <td>
+        Новый сторудник
+    </td>
+    <td>
+
+    </td>
+    <td>
+
+    </td>
+    <td>
         @Html.ActionLink("Добавить", "CreationPage")
     </td>
-    <td></td>
-    <td></td>
-    <td></td>
 </tr>
 </table>

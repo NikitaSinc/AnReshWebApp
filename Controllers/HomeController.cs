@@ -22,7 +22,6 @@ namespace AnReshWebApp.Controllers
                     return WriteAction(newDescription);
                 default:
                     {
-                        ViewData["Description"] = description.DescriptionTextGet();
                         return View();
                     }
 

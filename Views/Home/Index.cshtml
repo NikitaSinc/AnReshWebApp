@@ -3,12 +3,18 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
     <form method="post" action="~/Home/Index" >
         <h1>Стажировка в Аналитических Решениях</h1>
-        <input class="lead" type="text" name="newDescription" value="@ViewData["Description"]" /><br />
-        <button class="btn btn-primary btn-lg" type="submit" name="readWriteButton" value=readButton>Обновить из файла</button>
-        <button class="btn btn-primary btn-lg" type="submit" name="readWriteButton" value=writeButton>Записать в файл</button>
+        <h2>Работа с файлом</h2>
+        <div class="file__form">
+            <textarea type="text" contenteditable="true" name="newDescription" 
+            placeholder="Введите текст или обновите поле из файла">@ViewData["Description"]</textarea>
+            <br />
+            <div class="button__group__index">
+                <button type="submit" name="readWriteButton"value=readButton>Обновить из файла</button>
+                <button type="submit" name="readWriteButton" value=writeButton>Записать в файл</button>
+            </div>
+        </div>
     </form>
 
-</div>
+

@@ -17,7 +17,7 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <Use64BitIISExpress />
+    <Use64BitIISExpress>false</Use64BitIISExpress>
     <IISExpressSSLPort>44305</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -193,13 +193,23 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\reset.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\header__logo__back.png" />
+    <Content Include="Images\header__logo__otc.png" />
+    <Content Include="Images\login__pic.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="libman.json" />
+    <Content Include="fonts\ibm-plex-sans-v9-latin_cyrillic-ext_cyrillic-500.woff" />
+    <Content Include="fonts\ibm-plex-sans-v9-latin_cyrillic-ext_cyrillic-500.woff2" />
+    <Content Include="fonts\ibm-plex-sans-v9-latin_cyrillic-ext_cyrillic-700.woff" />
+    <Content Include="fonts\ibm-plex-sans-v9-latin_cyrillic-ext_cyrillic-700.woff2" />
+    <Content Include="fonts\ibm-plex-sans-v9-latin_cyrillic-ext_cyrillic-regular.woff" />
+    <Content Include="fonts\ibm-plex-sans-v9-latin_cyrillic-ext_cyrillic-regular.woff2" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -224,12 +234,9 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Department\DepartmentForm.cshtml" />
     <Content Include="Views\Employee\EmployeeForm.cshtml" />
-    <Content Include="Views\Home\_WorkWithData.cshtml" />
     <Content Include="Views\Creation.cshtml" />
     <Content Include="Views\Department\CreationPage.cshtml" />
     <Content Include="Views\Department\EditPage.cshtml" />
@@ -278,6 +285,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
+      <UserProperties content_4bootstrap-theme_1min_1css_1map__JsonSchema="" />
     </VisualStudio>
   </ProjectExtensions>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

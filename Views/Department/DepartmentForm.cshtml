@@ -1,38 +1,49 @@
 ﻿@model IEnumerable<AnReshWebApp.Models.Department>
-
 @{
     ViewBag.Title = "DepartmentForm";
-    Layout = "~/Views/Home/_WorkWithData.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<h1>Стажировка в Аналитических Решениях</h1>
 <h2>Отделы</h2>
 
 
-<table class="table">
+<table>
     <tr>
         <th>
-            Отдел:
+            ID
         </th>
         <th>
-            Операции:
+            Отдел
+        </th>
+        <th>
+            Операции
         </th>
     </tr>
 
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Изменить", "EditPage", new { id = item.Id }) |
+                @Html.ActionLink("Удалить", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-            @Html.ActionLink("Изменить", "EditPage", new { id=item.Id }) |
-            @Html.ActionLink("Удалить", "Delete", new { id=item.Id })
+            Новый отдел
+        </td>
+
+        <td>
+            @Html.ActionLink("Добавить", "CreationPage")
         </td>
     </tr>
-}
-<tr>
-    <td>
-       @Html.ActionLink("Добавить", "CreationPage")
-    </td>
-    <td></td>
-</tr>
 </table>
