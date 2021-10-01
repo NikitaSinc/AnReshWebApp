@@ -59,6 +59,24 @@ textarea {
     padding: 10px;
 }
 
+.form-group input, .form-group select{
+    box-sizing: border-box;
+    color: #6E7C8d;
+    border-radius: 5px;
+    background: #FFFFFF;
+    border: none;
+    min-height: 40px;
+    width: inherit;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.form-group button {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 input:focus, input:hover{
     color: #000000;
 }

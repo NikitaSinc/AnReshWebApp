@@ -179,12 +179,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\IRepository.cs" />
-    <Compile Include="Models\DepartmentRepository.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\DepartmentRepository.cs" />
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\Department.cs" />
-    <Compile Include="Models\Description.cs" />
-    <Compile Include="Models\EmployeeRepository.cs" />
+    <Compile Include="Repositories\Description.cs" />
+    <Compile Include="Repositories\EmployeeRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +210,7 @@
     <Content Include="fonts\ibm-plex-sans-v9-latin_cyrillic-ext_cyrillic-700.woff2" />
     <Content Include="fonts\ibm-plex-sans-v9-latin_cyrillic-ext_cyrillic-regular.woff" />
     <Content Include="fonts\ibm-plex-sans-v9-latin_cyrillic-ext_cyrillic-regular.woff2" />
+    <Content Include="AppSettings.config" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -221,8 +222,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\vue.js" />
-    <Content Include="Scripts\vue.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

@@ -1,16 +1,18 @@
-create database if not exists AnReshProbation;
+use master;
+drop database if exists AnReshProbation;
+create database  AnReshProbation;
 
-use AnReshProbation;
-CREATE USER if not exists 'anreshuser'@'%' IDENTIFIED BY 'anreshuser';
-GRANT ALL privileges ON anreshprobation.* TO 'anreshuser'@'%';
+use [AnReshProbation];
+drop user if exists anreshuser;
+create user anreshuser without login;
+GRANT BACKUP DATABASE, BACKUP LOG, CREATE DEFAULT, CREATE FUNCTION, CREATE PROCEDURE, CREATE RULE, CREATE TABLE, CREATE VIEW TO anreshuser;
+drop table if exists Employee;
+drop table if exists Department;
+create table Department (
+	Id int not null identity(1,1) primary key,
+	Name char(100) not null);
 
-create table if not exists Department (
-	Id int(3) not null auto_increment,
-	Name char(100) not null,
-	primary key (id));
-
-insert into 
-	Department ( name)
+insert Department(Name)
 values
 	('Администрация'),
     ('Отдел кадров'),
@@ -21,21 +23,121 @@ values
     ('Отдел ИТ'),
     ('Отдел закупок');
 	
-
-create table if not exists Employee (
-	Id int(8) not null auto_increment,
+create table Employee (
+	Id int not null identity(1,1) primary key,
 	Full_name char(250) not null,
-	Id_department int(3),
-	Salary int(9) default 12392,
-	primary key (id), foreign key (id_department) references department (id) on delete set null);
+	Id_department int not null foreign key references Department(Id) on delete cascade,
+	Salary int not null default 12392);
     
-INSERT INTO `employee` (`full_name`,`id_department`,`salary`) VALUES ("Quintessa P. Chan",2,19906),("Brittany U. Swanson",7,50592),("Sawyer D. Luna",6,115416),("Steel T. Orr",5,75343),("Beatrice X. Madden",4,18659),("Sophia G. Watson",1,83834),("Hillary F. Potter",1,41568),("Dante W. Lynch",5,62143),("Magee X. Rowland",1,96808),("Keith B. Mann",1,102332);
-INSERT INTO `employee` (`full_name`,`id_department`,`salary`) VALUES ("Erin I. Gallagher",7,35216),("Glenna W. Mitchell",1,106502),("Brianna H. Frye",7,22916),("Maxwell I. Small",3,99455),("Devin L. Castaneda",4,65010),("Raphael Q. Mathis",3,145532),("Wynne I. Henry",4,60220),("Kieran Y. Holland",1,30971),("Alexander F. Franklin",5,17896),("Carson A. Osborne",2,43488);
-INSERT INTO `employee` (`full_name`,`id_department`,`salary`) VALUES ("Urielle H. Stewart",2,45129),("Haviva J. Mercado",6,62266),("Macey R. Sears",2,141548),("Olivia N. Graves",1,110600),("Upton B. Watkins",7,125670),("Hermione V. Bartlett",5,97676),("Eve F. Shepherd",2,100550),("Zelenia X. Delaney",6,127239),("Brooke Z. Stephens",7,109115),("Daquan U. Watts",4,50135);
-INSERT INTO `employee` (`full_name`,`id_department`,`salary`) VALUES ("Deacon I. Stewart",1,38671),("Brady R. Pierce",1,29134),("Alden P. Carlson",5,96757),("Basil I. Kline",7,117748),("Ethan R. Malone",2,129441),("Daquan K. Sheppard",5,18344),("Hilary S. Dodson",3,105240),("Merrill O. Carver",4,72059),("Nola N. Mccray",8,37720),("Holly Y. Donovan",1,89461);
-INSERT INTO `employee` (`full_name`,`id_department`,`salary`) VALUES ("Brady M. Lawson",5,75304),("Marcia L. Gibbs",8,47557),("Tobias Y. Kramer",1,28552),("Lana M. Murray",7,96164),("Reese K. Hurley",5,89040),("Shellie Y. Mcneil",3,67119),("Asher I. Torres",2,34132),("Hector Y. Daugherty",3,76809),("Mollie T. Woodward",2,38429),("Harlan H. Dickerson",8,124694);
-INSERT INTO `employee` (`full_name`,`id_department`,`salary`) VALUES ("Echo P. Robinson",6,14979),("Marshall W. Mckay",3,116497),("Tate A. Rodgers",3,15612),("Felix Y. Hart",2,143458),("Brynne I. Kennedy",7,133490),("Galena N. Blanchard",6,35729),("Galvin X. Merrill",8,122038),("Rama S. Phillips",8,98487),("Oliver I. Knight",4,81340),("Eliana T. Dillon",3,85430);
-INSERT INTO `employee` (`full_name`,`id_department`,`salary`) VALUES ("Bruce P. Lyons",8,50003),("Mason F. Hernandez",7,116873),("Steven H. Mcdowell",1,68362),("Risa D. Ingram",7,12674),("Stuart U. Barlow",8,100998),("Haley V. Christensen",4,14863),("Benjamin G. Frazier",4,78457),("Camden L. Gentry",8,84867),("Ora K. Soto",5,28423),("Charles L. Dejesus",1,134207);
-INSERT INTO `employee` (`full_name`,`id_department`,`salary`) VALUES ("Barbara K. Peters",5,81714),("Michelle B. Eaton",7,60455),("Myra P. Barton",8,71188),("Callie A. Hickman",3,18275),("Stephanie X. Everett",3,66030),("Tallulah L. Gutierrez",8,123692),("Preston A. Glenn",3,50228),("Trevor V. Britt",8,84175),("Jenna Y. Cooper",5,63082),("Elizabeth W. Summers",3,95094);
-INSERT INTO `employee` (`full_name`,`id_department`,`salary`) VALUES ("Elizabeth T. Nichols",1,26704),("Kaye L. Mcbride",3,64915),("Brock O. Mosley",8,72545),("Uriah E. Butler",1,146017),("Ezra Q. Pope",1,29769),("Nicholas S. Perkins",4,16867),("Kennedy F. Boyer",8,100241),("Zeus U. Mcintyre",6,57313),("Roanna W. Soto",6,60315),("Cody N. Sherman",1,78980);
-INSERT INTO `employee` (`full_name`,`id_department`,`salary`) VALUES ("Buckminster O. Weaver",2,140027),("Victoria N. Mcclure",4,26065),("Vance O. Knight",2,97994),("Meghan D. Mcfadden",7,92260),("Medge R. Cleveland",1,104927),("Callie J. Walton",2,128049),("Liberty C. Smith",3,56496),("Allen A. Knapp",6,137452),("Savannah C. Byrd",4,132430),("Arthur W. Tillman",2,24158);
+INSERT INTO [Employee] (Full_name,Id_department,Salary)
+VALUES
+  ('Graham S. Baldwin',6,176030),
+  ('Shelby N. Walsh',8,174982),
+  ('Dalton I. Owen',4,25768),
+  ('Nash S. Walls',6,127024),
+  ('Dawn U. Mercer',4,31874),
+  ('Alice Y. Langley',2,93255),
+  ('Lisandra N. Ramos',3,150931),
+  ('Sybil T. Callahan',4,176298),
+  ('Ariel V. Rosales',2,186759),
+  ('Yeo U. Thompson',5,101748),
+  ('Melodie G. Walton',3,109411),
+  ('Nathaniel Y. Ball',2,158062),
+  ('Jaden R. Collins',5,139689),
+  ('Oren M. Silva',4,102409),
+  ('Allistair B. Cooper',5,105186),
+  ('Blaze D. Webb',5,53344),
+  ('Lana V. Stafford',3,178001),
+  ('Ainsley Y. Fuentes',6,168466),
+  ('Hashim G. Lester',5,178244),
+  ('Mollie M. Mack',1,12900);
+INSERT INTO [Employee] (Full_name,Id_department,Salary)
+VALUES
+  ('Alisa S. Lee',5,182891),
+  ('Eagan O. Miles',8,158931),
+  ('Hilary O. Holden',3,54243),
+  ('Georgia T. Leon',6,130319),
+  ('Hamish J. Luna',6,148752),
+  ('Coby D. Banks',2,158482),
+  ('Isaiah G. Mullen',4,77220),
+  ('Cameran O. Burke',4,148419),
+  ('Jacqueline U. Hayes',1,107068),
+  ('Demetria N. Hull',2,117529),
+  ('Adara V. Johnston',8,77698),
+  ('Boris C. Hull',6,67050),
+  ('Brenna Y. Anderson',5,50954),
+  ('Maggie X. Haley',3,61862),
+  ('Palmer Y. Villarreal',5,148794),
+  ('Uma F. Good',7,176140),
+  ('Cody G. Hutchinson',4,50927),
+  ('Edward X. Hopper',2,105871),
+  ('Nadine F. Andrews',5,107209),
+  ('Benjamin R. Bush',7,120210);
+INSERT INTO [Employee] (Full_name,Id_department,Salary)
+VALUES
+  ('Tara Q. Burris',5,54632),
+  ('Ruby Q. Mccray',4,17813),
+  ('Fiona W. Britt',6,108583),
+  ('Fiona L. Chase',5,28536),
+  ('Bradley O. Walters',6,116245),
+  ('Gemma Y. Pruitt',8,177386),
+  ('Galvin N. Nicholson',6,46033),
+  ('Brent O. Allison',2,160291),
+  ('George T. Kaufman',6,38282),
+  ('Talon K. Calhoun',2,100570);
+INSERT INTO [Employee] (Full_name,Id_department,Salary)
+VALUES
+  ('Arden F. Palmer',3,111011),
+  ('Murphy W. Campbell',3,81176),
+  ('Bree S. Warner',2,165522),
+  ('Kirby U. Reyes',4,77981),
+  ('Slade U. Daniels',3,197863),
+  ('Benjamin N. Mccormick',3,67471),
+  ('Kay K. Mack',6,72349),
+  ('Eliana Y. Terry',3,156534),
+  ('Patrick S. York',4,117721),
+  ('Thaddeus R. Farrell',6,176273),
+  ('Evan O. Byrd',4,64456),
+  ('Kyla N. Wong',4,84813),
+  ('Hollee C. Whitehead',2,170571),
+  ('Nolan B. Larson',5,135906),
+  ('Solomon Q. Campos',4,81642),
+  ('Leslie B. Pruitt',5,61737),
+  ('Dominique H. Dotson',7,51142),
+  ('Trevor D. Pennington',5,114536),
+  ('Logan A. Stone',5,16226),
+  ('Reese X. Figueroa',3,137792);
+INSERT INTO [Employee] (Full_name,Id_department,Salary)
+VALUES
+  ('Germane M. Le',6,105040),
+  ('Jamal W. Dillon',8,28010),
+  ('Xena N. Mcfarland',1,72590),
+  ('Declan F. Mitchell',5,41866),
+  ('Sarah P. Reed',3,25198),
+  ('Mary D. Summers',1,98386),
+  ('Kenneth I. Lucas',7,29343),
+  ('Noel Y. Castaneda',5,132147),
+  ('Aristotle C. Alvarado',6,73101),
+  ('Malcolm T. Valenzuela',6,35677),
+  ('Jamalia Z. Gallagher',4,29896),
+  ('Wade Q. Lowery',5,121616),
+  ('Inez J. Welch',7,99865),
+  ('Germaine R. Bauer',5,25640),
+  ('Neil B. Terry',5,156670),
+  ('Aidan P. Velazquez',2,68713),
+  ('Samuel I. Moore',4,179999),
+  ('Victor T. Rogers',5,186844),
+  ('Dominic L. Nichols',8,50282),
+  ('Christian B. Farley',4,187204);
+INSERT INTO [Employee] (Full_name,Id_department,Salary)
+VALUES
+  ('Suki J. Hudson',7,166753),
+  ('Scott T. Hull',2,178773),
+  ('Lila G. Weeks',3,94700),
+  ('Kylie K. Calhoun',1,172700),
+  ('Kellie V. Pollard',8,100089),
+  ('Chaney B. Morton',6,15207),
+  ('Erica M. Brewer',7,156712),
+  ('Maile L. Gray',8,52040),
+  ('Matthew E. Buckner',4,57841),
+  ('Neil U. Summers',7,61824);
