@@ -10,36 +10,41 @@ namespace AnReshWebApp.Controllers
 {
     public class EmployeeController : Controller
     {
-        public EmployeeRepository repository = new EmployeeRepository();
+        public EmployeeRepository employeeRepository = new EmployeeRepository();
+        public DepartmentRepository departmentRepository = new DepartmentRepository();
         public async Task<ActionResult> EmployeeForm()
         {
-            return View(await repository.GetAllAsync());
+            return View(await employeeRepository.GetAllAsync());
         }
         public async Task<ActionResult> Delete(int id)
         {
-            await repository.DeleteAsync(id);
+            await employeeRepository.DeleteAsync(id);
             return RedirectToAction("EmployeeForm");
         }
 
         public async Task<ActionResult> Edit(Employee employee)
         {
-            await repository.UpdateAsync(employee);
+            employee.Id_department = await departmentRepository.GetIdByNameAsync(employee.Department.Name);
+            await employeeRepository.UpdateAsync(employee);
             return RedirectToAction("EmployeeForm");
         }
 
-        public ActionResult EditPage(Employee employee)
+        public async Task<ActionResult> EditPage(int id)
         {
-            return View(employee);
+            ViewBag.Departments = await departmentRepository.GetAllNamesAsync();
+            return View(await employeeRepository.GetByIdAsync(id));
         }
 
         public async Task<ActionResult> Create(Employee employee)
         {
-            await repository.AddAsync(employee);
+            employee.Id_department = await departmentRepository.GetIdByNameAsync(employee.Department.Name);
+            await employeeRepository.AddAsync(employee);
             return RedirectToAction("EmployeeForm");
         }
 
-        public ActionResult CreationPage()
+        public async Task<ActionResult> CreationPage()
         {
+            ViewBag.Departments = await departmentRepository.GetAllNamesAsync();
             return View();
         }
     }
