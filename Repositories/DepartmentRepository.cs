@@ -13,7 +13,7 @@ namespace AnReshWebApp.Models
     public interface IDepartmentRepository : IRepository<Department>
     {
        Task<List<string>> GetAllNamesAsync();
-        Task<int> GetIdByNameAsync(string name);
+       Task<int> GetIdByNameAsync(string name);
     }
 
     public class DepartmentRepository : IDepartmentRepository
