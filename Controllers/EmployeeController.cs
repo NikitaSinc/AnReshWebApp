@@ -12,6 +12,14 @@ namespace AnReshWebApp.Controllers
     {
         public EmployeeRepository employeeRepository = new EmployeeRepository();
         public DepartmentRepository departmentRepository = new DepartmentRepository();
+
+        public async Task<JsonResult> SendData()
+        {
+            var employeeList = await employeeRepository.GetAllAsync();
+
+            return Json(employeeList, JsonRequestBehavior.AllowGet);
+        }
+
         public async Task<ActionResult> EmployeeForm()
         {
             return View(await employeeRepository.GetAllAsync());
@@ -22,30 +30,20 @@ namespace AnReshWebApp.Controllers
             return RedirectToAction("EmployeeForm");
         }
 
-        public async Task<ActionResult> Edit(Employee employee)
+        public async Task<ActionResult> Edit(int id, string full_name, int departmentId, int salary)
         {
-            employee.Id_department = await departmentRepository.GetIdByNameAsync(employee.Department.Name);
+            Employee employee = new Employee();
+            employee.Id = id; employee.Full_name = full_name; employee.Salary = salary; employee.Id_department = departmentId;
             await employeeRepository.UpdateAsync(employee);
             return RedirectToAction("EmployeeForm");
         }
 
-        public async Task<ActionResult> EditPage(int id)
+        public async Task<ActionResult> Create( string full_name, int departmentId, int salary)
         {
-            ViewBag.Departments = await departmentRepository.GetAllNamesAsync();
-            return View(await employeeRepository.GetByIdAsync(id));
-        }
-
-        public async Task<ActionResult> Create(Employee employee)
-        {
-            employee.Id_department = await departmentRepository.GetIdByNameAsync(employee.Department.Name);
+            Employee employee = new Employee();
+            employee.Full_name = full_name; employee.Salary = salary; employee.Id_department = departmentId;
             await employeeRepository.AddAsync(employee);
             return RedirectToAction("EmployeeForm");
-        }
-
-        public async Task<ActionResult> CreationPage()
-        {
-            ViewBag.Departments = await departmentRepository.GetAllNamesAsync();
-            return View();
         }
     }
 }

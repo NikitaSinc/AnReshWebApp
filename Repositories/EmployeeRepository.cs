@@ -31,7 +31,7 @@ namespace AnReshWebApp.Models
         {
             using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
             {
-                var result = await db.QueryAsync<Employee, Department, Employee>("select E.Id, E.Full_name, E.Salary, D.Name from Employee as E, Department as D where E.Id_department = D.Id", 
+                var result = await db.QueryAsync<Employee, Department, Employee>("select E.Id, E.Full_name, E.Salary, D.Name, D.Id from Employee as E, Department as D where E.Id_department = D.Id", 
                     map :(employee,department)=> { employee.Department = department; return employee; }, splitOn: "Name");
                 return result.ToList();
             }
