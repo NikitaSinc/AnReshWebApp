@@ -23,7 +23,7 @@ namespace AnReshWebApp.Controllers
        
         public ActionResult DepartmentForm()
         {
-            return View();
+            return View("_Layout");
         }
 
         public async Task<ActionResult> Delete(int id)

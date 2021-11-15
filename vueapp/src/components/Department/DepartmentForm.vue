@@ -25,7 +25,7 @@
                 {{department.Name}}
             </td>
             <td>
-                <router-link :to="{name:'DepartmentEditPage', params:{id: department.Id, name: department.Name}}">Изменить</router-link> | <a href='' @click="deleteDepartment(department.Id)">Удалить</a>
+                <router-link :to="{name:'DepartmentEditPage', params:{id: department.Id, name: department.Name}}">Изменить</router-link> | <a href='#' @click="deleteDepartment(department.Id)">Удалить</a>
             </td>
     </tr>
     <tr>
@@ -44,7 +44,6 @@
 </template>
 
 <script>
-
 export default 
 {
     data()
@@ -57,19 +56,26 @@ export default
         {
             async loadData()
             {
-                const response = await fetch("http://localhost:44305/Department/SendData")
+                const response = await fetch(this.$store.state.backendPath +"Department/SendData")
                 const serverData = await response.json() 
                 this.departmentList = serverData;
             },
        
             async deleteDepartment(id){
+                if (this.$store.state.logged === false){
+                    this.$router.push('/User/Login');
+                     this.$store.commit('setMessage', 'Для продолжения необходимо войти в аккаунт!')
+                }                 
+                else{
+                this.$store.dispatch('checkValidation');
                 const requestOptions = {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({id: id})
                 };
-                fetch("http://localhost:44305/Department/Delete", requestOptions),
+                fetch(this.$store.state.backendPath +"Department/Delete", requestOptions),
                 this.loadData()
+                }
             },
         },
             mounted()

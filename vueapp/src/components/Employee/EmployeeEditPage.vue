@@ -11,7 +11,7 @@
             <label>Отдел: </label>
             <select v-model="department">
                 <option value="null" disabled hidden>{{departmentName}}</option>
-                <option v-for="department in departmentList" :key="department.id" :value="department">{{department.Name}}</option>
+                <option v-for="department in departmentList" :key="department.Id" :value="department">{{department.Name}}</option>
             </select>
         </div>
         <div class="form-group">
@@ -39,7 +39,7 @@ export default {
         methods:{
 
             async loadDepartmentData(){
-                const response = await fetch("http://localhost:44305/Department/SendData")
+                const response = await fetch(this.$store.state.backendPath +"Department/SendData")
                 const serverData = await response.json() 
                 this.departmentList = serverData;
                 this.department = null;
@@ -51,7 +51,7 @@ export default {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({id: this.id, full_name: this.full_name, departmentId: this.department.Id, salary: this.salary})
                 };
-                fetch("http://localhost:44305/Employee/Edit", requestOptions),
+                fetch(this.$store.state.backendPath +"Employee/Edit", requestOptions),
                 this.$router.push('/Employee/EmployeeForm')
             },
         },
