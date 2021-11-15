@@ -38,7 +38,7 @@ export default {
         methods:{
 
             async loadDepartmentData(){
-                const response = await fetch("http://localhost:44305/Department/SendData")
+                const response = await fetch(this.$store.state.backendPath +"Department/SendData")
                 const serverData = await response.json() 
                 this.departmentList = serverData;
                 this.department = null;
@@ -50,7 +50,7 @@ export default {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({full_name: this.full_name, departmentId: this.department.Id, salary: this.salary})
                 };
-                fetch("http://localhost:44305/Employee/Create", requestOptions),
+                fetch(this.$store.state.backendPath +"Employee/Create", requestOptions),
                 this.$router.push('/Employee/EmployeeForm')
             },
         },

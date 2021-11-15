@@ -10,47 +10,53 @@ using System.Web;
 
 namespace AnReshWebApp.Models
 {
-
-    public interface IEmployeeRepository : IRepository<Employee>
+    public interface IUsersRepository : IRepository<Users>
+        {
+        }
+    public class UsersRepository : IUsersRepository
     {
-    }
-
-    public class EmployeeRepository : IEmployeeRepository
-    {
-        public async Task<Employee> GetByIdAsync(int id)
+        public async Task<Users> LoginAsync(string login, string password)
         {
             using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
             {
-                var result = await db.QueryAsync<Employee>("select * from Employee where Id=@Id", new { id });
+                var result = await db.QueryAsync<Users>("SELECT * FROM Users WHERE Login=@login and Password= @password", new {login, password });
+                return result.FirstOrDefault();
+            }
+        }
+        public async Task<Users> GetByIdAsync(int id)
+        {
+            using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
+            {
+                var result = await db.QueryAsync<Users>("SELECT * FROM Users WHERE Id=@id", new { id });
                 return result.FirstOrDefault();
             }
         }
 
-        public async Task<IReadOnlyList<Employee>> GetAllAsync()
+        public async Task<IReadOnlyList<Users>> GetAllAsync()
         {
             using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
             {
-                var result = await db.QueryAsync<Employee>("select * from Employee");
+                var result = await db.QueryAsync<Users>("SELECT * FROM Users");
                 return result.ToList();
             }
         }
 
-        public async Task<int> AddAsync(Employee entity)
+        public async Task<int> AddAsync(Users entity)
         {
             using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
             {
-                var sqlQuery = "INSERT INTO Employee (Full_name, Id_department, Salary) VALUES(@Full_name, @Id_department, @Salary)";
+                var sqlQuery = "INSERT INTO Users (Login, Password) VALUES(@Login, @Password)";
                 var result = await db.ExecuteAsync(sqlQuery, entity);
                 return result;
             }
 
         }
 
-        public async Task<int> UpdateAsync(Employee entity)
+        public async Task<int> UpdateAsync(Users entity)
         {
             using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
             {
-                var sqlQuery = "UPDATE Employee SET Full_name = @Full_name, Id_department=@Id_department, Salary=@Salary WHERE Id = @Id";
+                var sqlQuery = "UPDATE Users SET Login = @Login, Password = @Password WHERE Id = @Id";
                 var result = await db.ExecuteAsync(sqlQuery, entity);
                 return result;
             }
@@ -60,11 +66,10 @@ namespace AnReshWebApp.Models
         {
             using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
             {
-                var sqlQuery = "DELETE FROM Employee WHERE Id = @id";
+                var sqlQuery = "DELETE FROM Users WHERE Id = @id";
                 var result = await db.ExecuteAsync(sqlQuery, new { id });
                 return result;
             }
         }
-
     }
 }

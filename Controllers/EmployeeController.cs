@@ -20,9 +20,9 @@ namespace AnReshWebApp.Controllers
             return Json(employeeList, JsonRequestBehavior.AllowGet);
         }
 
-        public async Task<ActionResult> EmployeeForm()
+        public ActionResult EmployeeForm()
         {
-            return View(await employeeRepository.GetAllAsync());
+            return View("_Layout");
         }
         public async Task<ActionResult> Delete(int id)
         {
@@ -38,7 +38,7 @@ namespace AnReshWebApp.Controllers
             return RedirectToAction("EmployeeForm");
         }
 
-        public async Task<ActionResult> Create( string full_name, int departmentId, int salary)
+        public async Task<ActionResult> Create(string full_name, int departmentId, int salary)
         {
             Employee employee = new Employee();
             employee.Full_name = full_name; employee.Salary = salary; employee.Id_department = departmentId;

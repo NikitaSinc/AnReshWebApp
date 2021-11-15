@@ -32,7 +32,7 @@ export default {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name: this.name })
             };
-            fetch("http://localhost:44305/Department/Create", requestOptions),
+            fetch(this.$store.state.backendPath +"Department/Create", requestOptions),
             this.$router.push('/Department/DepartmentForm')
         }
     }

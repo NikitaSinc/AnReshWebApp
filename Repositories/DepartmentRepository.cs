@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using Dapper;
-using MySql.Data.MySqlClient;
 using System.Data.SqlClient;
 
 namespace AnReshWebApp.Models

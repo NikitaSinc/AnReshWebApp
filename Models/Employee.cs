@@ -14,6 +14,5 @@ namespace AnReshWebApp.Models
 
         [ForeignKey("Id_department")]
         public int Id_department { get; set; }
-        public Department Department { get; set; }
     }
 }
