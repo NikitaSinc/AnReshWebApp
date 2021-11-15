@@ -23,21 +23,21 @@
         </th>
     </tr>
 
-    <tr v-for="employee in employeeList" v-bind:key="employee.Id">
+    <tr v-for="employee in employeeList" :key="employee.Id">
             <td>
                 {{employee.Id}}
             </td>
             <td>
                 {{employee.Full_name}}
             </td>
-            <td>
-                {{employee.Department.Name}}
+            <td v-for="department in departmentList.filter(function(elem){if (elem.Id === employee.Id_department) return elem})" :key="department.Id">
+                {{department.Name}}
             </td>
             <td>
                 {{employee.Salary}}
             </td>
             <td>
-                <router-link :to="{name:'EmployeeEditPage', params:{id: employee.Id, full_name: employee.Full_name, departmentName: employee.Department.Name, departmentId:employee.Department.Id, salary: employee.Salary}}">Изменить</router-link> | <a href='' @click="deleteEmployee(employee.Id)">Удалить</a>
+                <router-link :to="{name:'EmployeeEditPage', params:{id: employee.Id, full_name: employee.Full_name, departmentId:employee.Id_department, salary: employee.Salary}}">Изменить</router-link> | <a href='#' @click="deleteEmployee(employee.Id)">Удалить</a>
             </td>
     </tr>
     <tr>
@@ -59,36 +59,54 @@ export default
     data()
     {
         return{
-        employee:{type: Object, Id:Number, Full_name:String, Department:Object,Salary:Number},
-        Department:{type: Object, Id:Number, Name:String},
-        employeeList:{type: Array}
+            employee:{type: Object, Id:Number, Full_name:String, Id_department:Number ,Salary:Number},
+            department:{type: Object, Id:Number, Name:String},
+            currentDepatrmentId:{type:Number},
+            employeeList:{type: Array},
+            departmentList:{type: Array}
         }
     },
         methods: 
         {
             async loadData()
             {
-                const response = await fetch("http://localhost:44305/Employee/SendData")
+                const response = await fetch(this.$store.state.backendPath +"Employee/SendData")
                 const serverData = await response.json() 
                 this.employeeList = serverData;
-
             },
        
+            async getDepartments()
+            {
+                const response = await fetch(this.$store.state.backendPath +"Department/SendData")
+                const serverData = await response.json() 
+                this.departmentList = serverData;
+            },
+
             async deleteEmployee(id){
+                if (this.$store.state.logged === false){
+                    this.$store.commit('setMessage', 'Для продолжения необходимо войти в аккаунт!');
+                    this.$router.push('/User/Login')
+                     
+                } 
+                else{
+                this.$store.dispatch('checkValidation');
                 const requestOptions = {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({id: id})
                 };
-                fetch("http://localhost:44305/Employee/Delete", requestOptions),
+                fetch(this.$store.state.backendPath +"Employee/Delete", requestOptions),
                 this.loadData()
+                }
             },
-         },
+        },
         beforeMount()
         {
+            this.getDepartments()
             this.loadData()
         },
         mounted(){
+            this.getDepartments()
             this.loadData()
         }
 }

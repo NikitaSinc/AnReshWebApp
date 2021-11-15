@@ -24,7 +24,7 @@ export default {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ name: this.name, id:this.id})
                 };
-                fetch("http://localhost:44305/Department/Edit", requestOptions),
+                fetch(this.$store.state.backendPath +"Department/Edit", requestOptions),
                 this.$router.push('/Department/DepartmentForm')
             }
 
