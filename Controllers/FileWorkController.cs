@@ -18,6 +18,7 @@ namespace AnReshWebApp.Controllers
 
         public JsonResult GetFile()
         {
+            //для чего ViewData?
             return Json(ViewData["Description"] = description.DescriptionTextGet(), JsonRequestBehavior.AllowGet);
         }
 

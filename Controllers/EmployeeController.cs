@@ -30,6 +30,7 @@ namespace AnReshWebApp.Controllers
             return RedirectToAction("EmployeeForm");
         }
 
+        //модель?
         public async Task<ActionResult> Edit(int id, string full_name, int departmentId, int salary)
         {
             Employee employee = new Employee();
@@ -38,6 +39,7 @@ namespace AnReshWebApp.Controllers
             return RedirectToAction("EmployeeForm");
         }
 
+        //тут тоже можно модель использовать
         public async Task<ActionResult> Create(string full_name, int departmentId, int salary)
         {
             Employee employee = new Employee();

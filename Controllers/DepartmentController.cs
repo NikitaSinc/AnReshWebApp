@@ -32,6 +32,7 @@ namespace AnReshWebApp.Controllers
             return RedirectToAction("DepartmentForm");
         }
 
+        //исползуй модель для передечи на бэк
         public async Task<ActionResult> Edit(int id, string name)
         {
             Department department = new Department();
