@@ -15,6 +15,7 @@ namespace AnReshWebApp.JWT
     public class JsonWebTokenService
     {
 		private readonly SymmetricSecurityKey mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings.Get("secretJWT")));
+		//в конфиги
 		private readonly string myIssuer = "http://localhost:44305";
 		private readonly string myAudience = "http://localhost:8080";
 
@@ -30,7 +31,7 @@ namespace AnReshWebApp.JWT
 					new Claim(ClaimTypes.Name, login)
 
 				}),
-				Expires = DateTime.UtcNow.AddMinutes(1),
+				Expires = DateTime.UtcNow.AddMinutes(1), //это тоже конфигурировать
 				Issuer = myIssuer,
 				Audience = myAudience,
 				SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)

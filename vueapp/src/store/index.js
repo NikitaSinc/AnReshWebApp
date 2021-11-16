@@ -4,6 +4,7 @@ import router from '../router';
 export default createStore({
   state: {
     backendPath: "http://localhost:44305/",
+    //используй лучше куки, их будешь пробрасывать на бэк, чтобы там валиднуть авторизированного пользака
     currentJWT:localStorage.getItem('JWT'),
     currentLogin:localStorage.getItem('Login'),
     currentId:localStorage.getItem('Id'),

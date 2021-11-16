@@ -11,6 +11,7 @@ using System.Web;
 namespace AnReshWebApp.Models
 {
     public interface IUsersRepository : IRepository<Users>
+        //стиль? следи за отступами, читабельность очень важна
         {
         }
     public class UsersRepository : IUsersRepository
