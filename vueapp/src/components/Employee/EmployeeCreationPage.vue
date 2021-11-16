@@ -34,7 +34,7 @@ export default {
             departmentList:{type: Array, department:Object}
         }
     },
-
+//что с форматированием?
         methods:{
 
             async loadDepartmentData(){

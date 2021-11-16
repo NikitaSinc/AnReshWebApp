@@ -23,6 +23,7 @@ export default {
     methods:{
         async loadData()
         {
+            //обработка ошибок?
             const response = await fetch(this.$store.state.backendPath +"FileWork/GetFile")
             const serverData = await response.json() 
             this.file = serverData;

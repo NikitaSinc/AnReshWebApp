@@ -15,6 +15,7 @@ namespace AnReshWebApp.Models
 
     public class DepartmentRepository : IDepartmentRepository
     {
+        //объявил и не используешь - не хорошо
         private string connectionString = ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString;
 
         public async Task<Department> GetByIdAsync(int id)
@@ -72,6 +73,7 @@ namespace AnReshWebApp.Models
             using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
             {
                 var sqlQuery = "SELECT name FROM Department";
+                //ты уже возвращаешь строку, зачем тут каст в Department
                 var result = await db.QueryAsync<Department>(sqlQuery);
                 List<string> stringResult = new List<string>();
                 foreach (Department department in result)
@@ -87,6 +89,7 @@ namespace AnReshWebApp.Models
             using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
             {
                 var result = await db.QueryAsync<Department>("SELECT * FROM Department WHERE Name=@name", new { name });
+                //если в result будет пусто - словишь ошибку
                 return result.FirstOrDefault().Id;
             }
         }
