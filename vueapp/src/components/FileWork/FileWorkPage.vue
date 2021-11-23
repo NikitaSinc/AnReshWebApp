@@ -23,10 +23,16 @@ export default {
     methods:{
         async loadData()
         {
-            //обработка ошибок?
             const response = await fetch(this.$store.state.backendPath +"FileWork/GetFile")
-            const serverData = await response.json() 
-            this.file = serverData;
+            if (response.status === 200)
+            {
+                const serverData = await response.json() 
+                this.file = serverData;
+            }
+            else 
+            {
+                this.file = 'Ошибка при загрузке файла'
+            }
         },
          async sendData()
          {

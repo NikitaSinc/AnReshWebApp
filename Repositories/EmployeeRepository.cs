@@ -17,9 +17,10 @@ namespace AnReshWebApp.Models
 
     public class EmployeeRepository : IEmployeeRepository
     {
+        private SqlConnection db = new SqlConnection(AppConfiguration.MSSQLConnection);
         public async Task<Employee> GetByIdAsync(int id)
         {
-            using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
+            using (db)
             {
                 var result = await db.QueryAsync<Employee>("select * from Employee where Id=@Id", new { id });
                 return result.FirstOrDefault();
@@ -28,7 +29,7 @@ namespace AnReshWebApp.Models
 
         public async Task<IReadOnlyList<Employee>> GetAllAsync()
         {
-            using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
+            using (db)
             {
                 var result = await db.QueryAsync<Employee>("select * from Employee");
                 return result.ToList();
@@ -37,7 +38,7 @@ namespace AnReshWebApp.Models
 
         public async Task<int> AddAsync(Employee entity)
         {
-            using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
+            using (db)
             {
                 var sqlQuery = "INSERT INTO Employee (Full_name, Id_department, Salary) VALUES(@Full_name, @Id_department, @Salary)";
                 var result = await db.ExecuteAsync(sqlQuery, entity);
@@ -48,7 +49,7 @@ namespace AnReshWebApp.Models
 
         public async Task<int> UpdateAsync(Employee entity)
         {
-            using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
+            using (db)
             {
                 var sqlQuery = "UPDATE Employee SET Full_name = @Full_name, Id_department=@Id_department, Salary=@Salary WHERE Id = @Id";
                 var result = await db.ExecuteAsync(sqlQuery, entity);
@@ -58,7 +59,7 @@ namespace AnReshWebApp.Models
 
         public async Task<int> DeleteAsync(int id)
         {
-            using (var db = new SqlConnection(ConfigurationManager.ConnectionStrings["MSSQLConnection"].ConnectionString))
+            using (db)
             {
                 var sqlQuery = "DELETE FROM Employee WHERE Id = @id";
                 var result = await db.ExecuteAsync(sqlQuery, new { id });

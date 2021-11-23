@@ -4,12 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using AnReshWebApp.Cors;
 using AnReshWebApp.Models;
 
 namespace AnReshWebApp.Controllers
 {
-    [AllowCrossSiteJson]
+
     public class DepartmentController : Controller
     {
 
@@ -26,27 +25,43 @@ namespace AnReshWebApp.Controllers
             return View("_Layout");
         }
 
-        public async Task<ActionResult> Delete(int id)
+        public async Task<HttpStatusCodeResult> Delete(int id)
         {
-            await repository.DeleteAsync(id);
-            return RedirectToAction("DepartmentForm");
+            try
+            {
+                await repository.DeleteAsync(id);
+            }
+            catch (Exception)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+            }
+            return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
         }
 
-        //исползуй модель для передечи на бэк
-        public async Task<ActionResult> Edit(int id, string name)
+        public async Task<HttpStatusCodeResult> Edit(Department department)
         {
-            Department department = new Department();
-            department.Id = id; department.Name = name;
-            await repository.UpdateAsync(department);
-            return RedirectToAction("DepartmentForm");
+            try
+            {
+                await repository.UpdateAsync(department);
+            }
+            catch (Exception)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+            }
+            return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
         }
-
-        public async Task<ActionResult> Create(string name)
+        [HttpPost]
+        public async Task<HttpStatusCodeResult> Create(Department department)
         {
-            Department department = new Department();
-            department.Name = name;
-            await repository.AddAsync(department);
-            return RedirectToAction("DepartmentForm");
+            try
+            {
+                await repository.AddAsync(department);
+            }
+            catch (Exception)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+            }
+            return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
         }
     }
 }
