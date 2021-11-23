@@ -18,14 +18,20 @@ namespace AnReshWebApp.Controllers
 
         public JsonResult GetFile()
         {
-            //для чего ViewData?
-            return Json(ViewData["Description"] = description.DescriptionTextGet(), JsonRequestBehavior.AllowGet);
+            return Json(description.DescriptionTextGet(), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult SetFile(string data)
+        public HttpStatusCodeResult SetFile(string data)
         {
-            description.DescriptionTextSet(data);
-            return RedirectToAction("FileWorkPage");
+            try
+            {
+                description.DescriptionTextSet(data);
+            }
+            catch (Exception)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+            }
+            return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
         }
     }
 }

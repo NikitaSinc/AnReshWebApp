@@ -18,13 +18,13 @@
 
             <div class="nav__top">
                 <div class="nav__top__user">
-                    <p v-if="this.$store.state.logged === false">
+                    <p v-if="this.$store.state.user.logged === false">
                         <img src="./images/login__pic.png" alt="login" class="login__pic" />
                         <router-link to="/User/Login">Войти</router-link>   |   <router-link to="/User/Registration">Зарегистрироваться</router-link>
                     </p>
                     <p v-else>
                         <img src="./images/login__pic.png" alt="login" class="login__pic" />
-                        <router-link to="/User/Login">Текущий пользователь: {{this.$store.state.currentLogin}}</router-link>
+                        <router-link to="/User/Login">Текущий пользователь: {{this.$cookies.get('Login')}}</router-link>
                     </p>
                 </div>
             </div>

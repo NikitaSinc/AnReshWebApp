@@ -1,73 +1,109 @@
 <template>
-<div id="app">
-   <h1>Стажировка в Аналитических Решениях</h1>
-<h2>Сотрудники</h2>
+    <h1>Стажировка в Аналитических Решениях</h1>
+    <h2>Сотрудники</h2>
 
+        <employee-creation-page 
+            v-if="showCreate"
+            @closeCreate="closeCreate"    
+        />
 
-<table class="table">
-    <tr>
-        <th>
-            ID
-        </th>
-        <th>
-            ФИО
-        </th>
-        <th>
-            Отдел
-        </th>
-        <th>
-            Заработная плата
-        </th>
-        <th>
-            Операции
-        </th>
-    </tr>
+        <employee-edit-page 
+            v-bind:employee = employee
+            v-if="showEdit"
+            @closeEdit="closeEdit"    
+        />
 
-    <tr v-for="employee in employeeList" :key="employee.Id">
+    <table class="table">
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                ФИО
+            </th>
+            <th>
+                Отдел
+            </th>
+            <th>
+                Заработная плата
+            </th>
+            <th>
+                Операции
+            </th>
+        </tr>
+
+        <tr v-for="employee in employeeList" :key="employee.Full_name" >
+                <td>
+                    {{employee.Id}}
+                </td>
+                <td>
+                    {{employee.Full_name}}
+                </td>
+                <td v-for="department in departmentList.filter(function(elem){if (elem.Id === employee.Id_department) return elem})" :key="department.Id">
+                    {{department.Name}}
+                </td>
+                <td>
+                    {{employee.Salary}}
+                </td>
+                <td>
+                    <a href='#' @click="() => {this.employee = employee; showEdit = true}">Изменить</a> | <a href='#' @click="deleteEmployee(employee.Id)">Удалить</a>
+                </td>
+        </tr>
+        <tr>
             <td>
-                {{employee.Id}}
+
             </td>
             <td>
-                {{employee.Full_name}}
-            </td>
-            <td v-for="department in departmentList.filter(function(elem){if (elem.Id === employee.Id_department) return elem})" :key="department.Id">
-                {{department.Name}}
+                Новый сотрудник
             </td>
             <td>
-                {{employee.Salary}}
+
             </td>
             <td>
-                <router-link :to="{name:'EmployeeEditPage', params:{id: employee.Id, full_name: employee.Full_name, departmentId:employee.Id_department, salary: employee.Salary}}">Изменить</router-link> | <a href='#' @click="deleteEmployee(employee.Id)">Удалить</a>
+
             </td>
-    </tr>
-    <tr>
-        <td></td>
-        <td>
-            Новый сотрудник
-        </td><td></td><td>
-        </td><td>
-            <router-link to="/Employee/EmployeeCreationPage">Добавить</router-link>
-        </td>
-    </tr>
-</table>
-</div>
+            <td>
+                <a href='#' @click="showCreate = true">Добавить</a>
+            </td>
+        </tr>
+    </table>
 </template>
 
 <script>
+import EmployeeCreationPage from './EmployeeCreationPage.vue'
+import EmployeeEditPage from './EmployeeEditPage.vue'
+
 export default 
 {
+    components:
+    {
+        EmployeeCreationPage,
+        EmployeeEditPage
+    },
     data()
     {
         return{
-            employee:{type: Object, Id:Number, Full_name:String, Id_department:Number ,Salary:Number},
-            department:{type: Object, Id:Number, Name:String},
-            currentDepatrmentId:{type:Number},
+            showEdit: false,
+            showCreate: false,
+            employee:{ Id:Number(), Full_name:String(), Id_department:Number() ,Salary:Number()},
+            department:{ Id:Number(), Name:String()},
             employeeList:{type: Array},
             departmentList:{type: Array}
         }
     },
         methods: 
         {
+            closeCreate()
+            {
+                this.showCreate = false
+                this.loadData()
+            },
+
+            closeEdit()
+            {
+                this.showEdit = false
+                this.loadData()
+            },
             async loadData()
             {
                 const response = await fetch(this.$store.state.backendPath +"Employee/SendData")
@@ -83,31 +119,29 @@ export default
             },
 
             async deleteEmployee(id){
-                if (this.$store.state.logged === false){
-                    this.$store.commit('setMessage', 'Для продолжения необходимо войти в аккаунт!');
-                    this.$router.push('/User/Login')
-                     
-                } 
-                else{
-                this.$store.dispatch('checkValidation');
-                const requestOptions = {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({id: id})
-                };
-                fetch(this.$store.state.backendPath +"Employee/Delete", requestOptions),
-                this.loadData()
+                this.$store.dispatch('user/checkValidation', '/Employee/EmployeeForm');
+                if (this.$store.state.user.logged === true)
+                {
+                    const requestOptions = {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({id: id})
+                    };
+                    const response = await fetch(this.$store.state.backendPath +"Employee/Delete", requestOptions)
+                    if (response.status === 200)
+                    {
+                        this.loadData()
+                    }
+                    else
+                    {
+                        this.$store.commit('setMessage', 'Ошибка при удалении данных')
+                    }
                 }
             },
         },
-        beforeMount()
-        {
+        beforeMount(){
             this.getDepartments()
             this.loadData()
         },
-        mounted(){
-            this.getDepartments()
-            this.loadData()
-        }
 }
 </script>

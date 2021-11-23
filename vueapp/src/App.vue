@@ -32,10 +32,10 @@ export default {
         Layout
     },
     beforeMount(){
-        if(localStorage.getItem('JWT') === null){
-            store.commit('logout')
+        if(this.$cookies.get('JWT') === null){
+            store.commit('user/logout')
         } else {
-            store.commit('login')
+            store.commit('user/login')
         }
     }
 } 

@@ -16,20 +16,22 @@ namespace AnReshWebApp.Controllers
         private UsersRepository repository = new UsersRepository();
 
         [HttpPost]
-        public async Task<JsonResult> LoginCheck(string login, string password)
+        public async Task<JsonResult> LoginCheck(Users user)
         {
-            Users user = await repository.LoginAsync(login, password);
-            if (user == null) //Пользователь не найден
+            try
+            {
+                await repository.LoginAsync(user);
+            }
+            catch(Exception)
             {
                 return Json(new HttpStatusCodeResult(System.Net.HttpStatusCode.Unauthorized));
-            };
+            }
             var JWT = jsonWebTokenService.GenerateToken(user.Id, user.Login);
             return Json(new {JWT, user.Login, user.Id}, JsonRequestBehavior.AllowGet);
         }
-        [HttpPost]
-        public HttpStatusCodeResult JWTCheck(string JWT)
+        public HttpStatusCodeResult JWTCheck()
         {
-            return jsonWebTokenService.ValidateToken(JWT);
+            return jsonWebTokenService.ValidateToken(HttpContext.Request.Cookies.Get("JWT").Value);
         }
         [HttpGet]
         public JsonResult GetSecret()
@@ -48,11 +50,8 @@ namespace AnReshWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<HttpStatusCodeResult> Registrate(string login, string password)
+        public async Task<HttpStatusCodeResult> Registrate(Users user)
         {
-            Users user = new Users();
-            user.Login = login;
-            user.Password = password;
             try 
             {
                 await repository.AddAsync(user);

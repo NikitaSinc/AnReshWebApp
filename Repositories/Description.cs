@@ -2,27 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.IO;
+using System.Web.Hosting;
 
 namespace AnReshWebApp.Models
 {
     public class Description
     {
         public string descriptionText;
-
-        //100% в конфиги
-        private const string filePath = @"C:\Users\nikit\source\repos\AnReshWebApp\App_Data\Description.txt";
-        private string DescriptionRead() // Reading from description file
+        readonly string filePath = AppConfiguration.DescriptionFilePath;
+        
+        private string DescriptionRead()
         {
-            //1 не пишит так - это нечитаемо
-            //2 а что если файла нет?
-            using (System.IO.TextReader descriptionReader = new System.IO.StreamReader(filePath)) return descriptionReader.ReadToEnd();
+            if (File.Exists(filePath))
+            {
+                using (TextReader descriptionReader = new StreamReader(filePath))
+                {
+                    return descriptionReader.ReadToEnd();
+                }
+            }
+            else return "Файл не существует!";
         }
 
-        private void DescriptionWrite(string newDescription) // Writing in description file
+        private void DescriptionWrite(string newDescription) 
         {
-            //вот так норм по  оформлению
-            //но вопрос по наличию файла остался
-            using (System.IO.TextWriter descriptionWriter = new System.IO.StreamWriter(filePath))
+            using (TextWriter descriptionWriter = new StreamWriter(filePath))
             {
                 descriptionWriter.WriteLine(newDescription);
             }
