@@ -16,7 +16,6 @@ namespace AnReshWebApp.Controllers
         public async Task<JsonResult> SendData()
         {
             var employeeList = await employeeRepository.GetAllAsync();
-
             return Json(employeeList, JsonRequestBehavior.AllowGet);
         }
 
@@ -24,28 +23,46 @@ namespace AnReshWebApp.Controllers
         {
             return View("_Layout");
         }
-        public async Task<ActionResult> Delete(int id)
+        public async Task<HttpStatusCodeResult> Delete(int id)
         {
-            await employeeRepository.DeleteAsync(id);
-            return RedirectToAction("EmployeeForm");
+            try
+            {
+                await employeeRepository.DeleteAsync(id);
+            }
+            catch (Exception)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+            }
+
+            return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
         }
 
-        //модель?
-        public async Task<ActionResult> Edit(int id, string full_name, int departmentId, int salary)
+        public async Task<HttpStatusCodeResult> Edit(Employee employee)
         {
-            Employee employee = new Employee();
-            employee.Id = id; employee.Full_name = full_name; employee.Salary = salary; employee.Id_department = departmentId;
-            await employeeRepository.UpdateAsync(employee);
-            return RedirectToAction("EmployeeForm");
+            try
+            {
+                await employeeRepository.UpdateAsync(employee);
+            }
+            catch (Exception)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+            }
+           
+            return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
         }
 
-        //тут тоже можно модель использовать
-        public async Task<ActionResult> Create(string full_name, int departmentId, int salary)
+        public async Task<HttpStatusCodeResult> Create(Employee employee)
         {
-            Employee employee = new Employee();
-            employee.Full_name = full_name; employee.Salary = salary; employee.Id_department = departmentId;
-            await employeeRepository.AddAsync(employee);
-            return RedirectToAction("EmployeeForm");
+            try
+            {
+                await employeeRepository.AddAsync(employee);
+            }
+            catch (Exception)
+            {
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+            }
+            
+            return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
         }
     }
 }

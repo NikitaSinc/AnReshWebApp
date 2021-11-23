@@ -1,6 +1,6 @@
 <template>
-    <div v-if="this.$store.state.logged === false">
-        <login-form v-bind:isRedirected="this.isRedirected"></login-form>   
+    <div v-if="this.$store.state.user.logged === false">
+        <login-form></login-form>   
     </div>
     <div v-else>
         <user-profile></user-profile>   
@@ -11,11 +11,6 @@ import LoginForm from './LoginForm.vue'
 import UserProfile from './UserProfile.vue'
 
 export default {
-    
-    components: { LoginForm, UserProfile },
-    data() {return{}
-    },
-    methods:{
-    }
+    components: { LoginForm, UserProfile }
 }
 </script>  

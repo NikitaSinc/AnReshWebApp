@@ -5,9 +5,8 @@ using System.Web;
 
 namespace AnReshWebApp.Models
 {
-    public class Department : BaseEntity
+    public class BaseEntity
     {
-        public string Name { get; set; }
-
+        public int Id { get; set; }
     }
 }

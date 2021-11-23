@@ -14,26 +14,22 @@ namespace AnReshWebApp.JWT
 {
     public class JsonWebTokenService
     {
-		private readonly SymmetricSecurityKey mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings.Get("secretJWT")));
-		//в конфиги
-		private readonly string myIssuer = "http://localhost:44305";
-		private readonly string myAudience = "http://localhost:8080";
+		private readonly SymmetricSecurityKey mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(AppConfiguration.JWTSecretkey));
 
 		public string GenerateToken(int id, string userLogin)
 		{
-			var login = userLogin.Trim();
 			var tokenHandler = new JwtSecurityTokenHandler();
 			var tokenDescriptor = new SecurityTokenDescriptor
             {
 				Subject = new ClaimsIdentity(new Claim[]
 				{
 					new Claim(ClaimTypes.NameIdentifier, id.ToString()),
-					new Claim(ClaimTypes.Name, login)
+					new Claim(ClaimTypes.Name, userLogin)
 
 				}),
-				Expires = DateTime.UtcNow.AddMinutes(1), //это тоже конфигурировать
-				Issuer = myIssuer,
-				Audience = myAudience,
+				Expires = DateTime.UtcNow.AddMinutes(AppConfiguration.JWTTimeout),
+				Issuer = AppConfiguration.HostURL,
+				Audience = AppConfiguration.ClientURL,
 				SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
 			};
 
@@ -63,8 +59,8 @@ namespace AnReshWebApp.JWT
 				ValidateLifetime = true, 
 				ValidateAudience = true,
 				ValidateIssuer = true,  
-				ValidIssuer = this.myIssuer,
-				ValidAudience = this.myAudience,
+				ValidIssuer = AppConfiguration.HostURL,
+				ValidAudience = AppConfiguration.ClientURL,
 				IssuerSigningKey = mySecurityKey
 			};
 		}

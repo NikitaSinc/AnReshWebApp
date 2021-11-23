@@ -6,11 +6,9 @@ using System.Web;
 
 namespace AnReshWebApp.Models
 {
-    public class Users
+    public class Users : BaseEntity
     {
-        public int Id { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
-        public string JWT { get; set; }
     }
 }
