@@ -1,85 +1,61 @@
 <template>
-    <h1>Стажировка в Аналитических Решениях</h1>
-    <h2>Сотрудники</h2>
+<div id="app">
+   <h1>Стажировка в Аналитических Решениях</h1>
+<h2>Сотрудники</h2>
 
-        <employee-creation-page 
-            v-if="showCreate"
-            @closeCreate="closeCreate"    
-        />
 
-        <employee-edit-page 
-            v-bind:employee = employee
-            v-if="showEdit"
-            @closeEdit="closeEdit"    
-        />
+<table class="table">
+    <tr>
+        <th>
+            ID
+        </th>
+        <th>
+            ФИО
+        </th>
+        <th>
+            Отдел
+        </th>
+        <th>
+            Заработная плата
+        </th>
+        <th>
+            Операции
+        </th>
+    </tr>
 
-    <table class="table">
-        <tr>
-            <th>
-                ID
-            </th>
-            <th>
-                ФИО
-            </th>
-            <th>
-                Отдел
-            </th>
-            <th>
-                Заработная плата
-            </th>
-            <th>
-                Операции
-            </th>
-        </tr>
-
-        <tr v-for="employee in employeeList" :key="employee.Full_name" >
-                <td>
-                    {{employee.Id}}
-                </td>
-                <td>
-                    {{employee.Full_name}}
-                </td>
-                <td v-for="department in departmentList.filter(function(elem){if (elem.Id === employee.Id_department) return elem})" :key="department.Id">
-                    {{department.Name}}
-                </td>
-                <td>
-                    {{employee.Salary}}
-                </td>
-                <td>
-                    <a href='#' @click="() => {this.employee = employee; showEdit = true}">Изменить</a> | <a href='#' @click="deleteEmployee(employee.Id)">Удалить</a>
-                </td>
-        </tr>
-        <tr>
+    <tr v-for="employee in employeeList" v-bind:key="employee.Id">
             <td>
-
+                {{employee.Id}}
             </td>
             <td>
-                Новый сотрудник
+                {{employee.Full_name}}
             </td>
             <td>
-
+                {{employee.Department.Name}}
             </td>
             <td>
-
+                {{employee.Salary}}
             </td>
             <td>
-                <a href='#' @click="showCreate = true">Добавить</a>
+                <router-link :to="{name:'EmployeeEditPage', params:{id: employee.Id, full_name: employee.Full_name, departmentName: employee.Department.Name, departmentId:employee.Department.Id, salary: employee.Salary}}">Изменить</router-link> | <a href='' @click="deleteEmployee(employee.Id)">Удалить</a>
             </td>
-        </tr>
-    </table>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            Новый сотрудник
+        </td><td></td><td>
+        </td><td>
+            <router-link to="/Employee/EmployeeCreationPage">Добавить</router-link>
+        </td>
+    </tr>
+</table>
+</div>
 </template>
 
 <script>
-import EmployeeCreationPage from './EmployeeCreationPage.vue'
-import EmployeeEditPage from './EmployeeEditPage.vue'
-
 export default 
 {
-    components:
-    {
-        EmployeeCreationPage,
-        EmployeeEditPage
-    },
     data()
     {
         return{
@@ -88,7 +64,8 @@ export default
             employee:{ Id:Number(), Full_name:String(), Id_department:Number() ,Salary:Number()},
             department:{ Id:Number(), Name:String()},
             employeeList:{type: Array},
-            departmentList:{type: Array}
+            departmentList:{type: Array},
+            skillList:{type: Array}
         }
     },
         methods: 
@@ -104,44 +81,45 @@ export default
                 this.showEdit = false
                 this.loadData()
             },
+
             async loadData()
             {
-                const response = await fetch(this.$store.state.backendPath +"Employee/SendData")
+                const response = await fetch("http://localhost:44305/Employee/SendData")
                 const serverData = await response.json() 
                 this.employeeList = serverData;
             },
        
+            async getSkills()
+            {
+                const response = await fetch(this.$store.state.backendPath +"Skills/SendData")
+                const serverData = await response.json() 
+                this.skillList = serverData;
+            },
+
             async getDepartments()
             {
                 const response = await fetch(this.$store.state.backendPath +"Department/SendData")
                 const serverData = await response.json() 
                 this.departmentList = serverData;
             },
-
+       
             async deleteEmployee(id){
-                this.$store.dispatch('user/checkValidation', '/Employee/EmployeeForm');
-                if (this.$store.state.user.logged === true)
-                {
-                    const requestOptions = {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({id: id})
-                    };
-                    const response = await fetch(this.$store.state.backendPath +"Employee/Delete", requestOptions)
-                    if (response.status === 200)
-                    {
-                        this.loadData()
-                    }
-                    else
-                    {
-                        this.$store.commit('setMessage', 'Ошибка при удалении данных')
-                    }
-                }
+                const requestOptions = {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({id: id})
+                };
+                fetch("http://localhost:44305/Employee/Delete", requestOptions),
+                this.loadData()
             },
         },
         beforeMount(){
+            this.getSkills()
             this.getDepartments()
             this.loadData()
         },
+        mounted(){
+            this.loadData()
+        }
 }
 </script>

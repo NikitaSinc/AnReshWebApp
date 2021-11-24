@@ -5,8 +5,8 @@ using System.Web;
 
 namespace AnReshWebApp.Models
 {
-    public abstract class BaseEntity
+    public class Skills : BaseEntity
     {
-        public int Id { get; set; }
+        public string Skill_name { get; set; }
     }
 }

@@ -8,10 +8,9 @@ create user anreshuser without login;
 GRANT BACKUP DATABASE, BACKUP LOG, CREATE DEFAULT, CREATE FUNCTION, CREATE PROCEDURE, CREATE RULE, CREATE TABLE, CREATE VIEW TO anreshuser;
 drop table if exists Employee;
 drop table if exists Department;
-drop table if exists Users;
 create table Department (
 	Id int not null identity(1,1) primary key,
-	Name varchar(100) not null);
+	Name char(100) not null);
 
 insert Department(Name)
 values
@@ -26,7 +25,7 @@ values
 	
 create table Employee (
 	Id int not null identity(1,1) primary key,
-	Full_name varchar(250) not null,
+	Full_name char(250) not null,
 	Id_department int not null foreign key references Department(Id) on delete cascade,
 	Salary int not null default 12392);
     
@@ -143,11 +142,31 @@ VALUES
   ('Matthew E. Buckner',4,57841),
   ('Neil U. Summers',7,61824);
 
-  create table Users (
+create table Skills (
+	Id int not null identity(1,1) primary key,
+	Skill_name varchar(250) not null unique);
+
+INSERT INTO [Skills] (Skill_name)
+	VALUES
+	('C#'),
+	('JavaScript'),
+	('SQL');
+
+create table EmployeeSkills (
+	Id_employee int not null foreign key references Employee(Id),
+	Id_skills int not null foreign key references Skills(Id));
+
+INSERT INTO [EmployeeSkills] (Id_employee, Id_skills)
+	VALUES
+	(1, 1),
+	(1, 2),
+	(1, 3);
+
+ create table Users (
 	Id int not null identity(1,1) primary key,
 	Login varchar(50) not null unique,
 	Password varchar(50) not null);
 
-	INSERT INTO [Users] (Login,Password)
+INSERT INTO [Users] (Login,Password)
 	VALUES
 	('login', 'password');

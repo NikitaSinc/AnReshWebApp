@@ -11,6 +11,8 @@
                             <li class="nav__list__item__sec"><router-link to="/Department/DepartmentForm">Отделы</router-link></li>
 
                             <li class="nav__list__item__sec"><router-link to="/Employee/EmployeeForm">Сотрудники</router-link></li>
+
+                            <li class="nav__list__item__sec"><router-link to="/Skill/SkillForm">Навыки</router-link></li>
                         </ol>
                     </li>
                 </ol>
