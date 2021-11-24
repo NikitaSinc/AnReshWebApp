@@ -9,10 +9,10 @@ namespace AnReshWebApp.Models
 {
     public interface IRepository<T> where T : BaseEntity
     {
-        Task<T> GetByIdAsync(int id);
-        Task<IReadOnlyList<T>> GetAllAsync();
-        Task<int> AddAsync(T entity);
-        Task<int> UpdateAsync(T entity);
+        Task<BaseEntity> GetByIdAsync(int id);
+        Task<IReadOnlyList<BaseEntity>> GetAllAsync();
+        Task<int> AddAsync(BaseEntity entity);
+        Task<int> UpdateAsync(BaseEntity entity);
         Task<int> DeleteAsync(int id);
     }
 }

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '../store';
 
 const routes = [
   {
@@ -16,10 +17,8 @@ const routes = [
     component: () => import('../components/Department/DepartmentCreationPage.vue'),
   },
   {
-    path: '/Department/DepartmentEditPage',
-    name: 'DepartmentEditPage',
-    component: () => import('../components/Department/DepartmentEditPage.vue'),
-    props: true
+    path: '/Department/DepartmentForm',
+    component: () => import('../components/Department/DepartmentForm.vue'),
   },
   {
     path: '/Employee/EmployeeForm',
@@ -27,9 +26,9 @@ const routes = [
     component: () => import('../components/Employee/EmployeeForm.vue'),
   },
   {
-    path: '/Employee/EmployeeCreationPage',
-    name: 'EmployeeCreationPage',
-    component: () => import('../components/Employee/EmployeeCreationPage.vue'),
+    path: '/User/Login',
+    name: 'Login',
+    component: () => import('../components/User/Login.vue'),
   },
   {
     path: '/User/Registration',
@@ -45,7 +44,23 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
+  scrollBehavior()
+  {
+    window.scrollTo(0,0)
+  },
+})
+  
+router.beforeEach((to, from, next) => {
+  if (store.state.redirected === true)
+  {
+    next()
+  }
+  else 
+  {
+    store.commit('clearMessage')
+    next()
+  }
 })
 
 export default router
