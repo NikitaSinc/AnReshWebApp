@@ -5,49 +5,53 @@ const routes = [
   {
     path: '/FileWork/FileWorkPage',
     name: 'FileWorkPage',
-    component: () => import('../components/FileWork/FileWorkPage.vue')
+    component: () => import('@/components/FileWork/FileWorkPage.vue')
   },
   {
     path: '/Department/DepartmentForm',
     name: 'DepartmentForm',
-    component: () => import('../components/Department/DepartmentForm.vue'),
+    component: () => import('@/components/Department/DepartmentForm.vue'),
   },
   {
     path: '/Department/DepartmentCreationPage',
-    component: () => import('../components/Department/DepartmentCreationPage.vue'),
+    component: () => import('@/components/Department/DepartmentCreationPage.vue'),
   },
   {
     path: '/Department/DepartmentForm',
-    component: () => import('../components/Department/DepartmentForm.vue'),
+    component: () => import('@/components/Department/DepartmentForm.vue'),
   },
   {
     path: '/Employee/EmployeeForm',
     name: 'EmployeeForm',
-    component: () => import('../components/Employee/EmployeeForm.vue'),
+    component: () => import('@/components/Employee/EmployeeForm.vue'),
   },
   {
     path: '/User/Login',
     name: 'Login',
-    component: () => import('../components/User/Login.vue'),
+    component: () => import('@/components/User/Login.vue'),
   },
   {
     path: '/User/Registration',
     name: 'Registration',
-    component: () => import('../components/User/Registration.vue')
+    component: () => import('@/components/User/Registration.vue')
   },
   {
     path: '/Skill/SkillForm',
     name: 'SkillForm',
-    component: () => import('../components/Skill/SkillForm.vue')
+    component: () => import('@/components/Skill/SkillForm.vue')
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
-  scrollBehavior()
+  scrollBehavior(to,from)
   {
-    window.scrollTo(0,0)
+    if(to !== from)
+    {
+      window.scrollTo(0,0)
+    }
+    
   },
 })
   

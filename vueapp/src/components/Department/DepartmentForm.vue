@@ -1,8 +1,8 @@
 <template>
-    <h1>Стажировка в Аналитических Решениях</h1>
-    <h2>Отделы</h2>
+    <h1>Отделы</h1>
     <h3 style="warning" v-if="this.$store.state.messageVariable !== null">{{this.$store.state.messageVariable}}</h3>
     <department-creation-page 
+        v-bind:department = department
         v-if="showCreate"
         @closeCreate="closeCreate"    
     />
@@ -11,6 +11,13 @@
         v-if="showEdit"
         @closeEdit="closeEdit"    
     />
+
+    <div>
+        <h2>Фильтры</h2>
+        <br>
+        <label>ФИО: </label>
+        <input v-model="department.Name" placeholder="Начните вводить ФИО" @input="filter()">
+    </div>
 
     <table class="table">
         <tr>
@@ -33,7 +40,7 @@
                 {{department.Name}}
             </td>
             <td>
-                <a href='#' @click="() => {this.department = department; showEdit = true}">Изменить</a> | <a href='#' @click="deleteDepartment(department.Id)">Удалить</a>
+                <a href='#' @click="() => {this.department = department; showEdit = true}">Изменить</a> | <a href='#' @click="deleteDepartment(department)">Удалить</a>
             </td>
         </tr>
         <tr>
@@ -44,15 +51,15 @@
             </td>
 
             <td>
-                <a href='#' @click="showCreate = true">Добавить</a>
+                <a href='#' @click="()=>{this.department={};showCreate = true}">Добавить</a>
             </td>
         </tr>
     </table>
 </template>
 
 <script>
-    import DepartmentCreationPage from './DepartmentCreationPage.vue'
-    import DepartmentEditPage from './DepartmentEditPage.vue'
+    import DepartmentCreationPage from '@/components/Department/DepartmentCreationPage.vue'
+    import DepartmentEditPage from '@/components/Department/DepartmentEditPage.vue'
     
 
     export default  
@@ -64,8 +71,8 @@
             return {
                 showEdit: false,
                 showCreate: false,
-                department:{type: Object},
-                departmentList:{type: Array}
+                department:{},
+                departmentList:[{}]
             }
         },
 
@@ -73,14 +80,25 @@
         {
             closeCreate()
             {
+                this.departmentList.push(this.department)
                 this.showCreate = false
-                this.loadData()
             },
 
             closeEdit()
             {
                 this.showEdit = false
-                this.loadData()
+            },
+
+            async filter()
+            {
+                const requestOptions = {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({department: this.department})
+                        };
+                const response = await fetch(this.$store.state.backendPath +"Department/SendData", requestOptions)
+                const serverData = await response.json() 
+                this.departmentList = serverData;
             },
 
             async loadData()
@@ -90,7 +108,7 @@
                 this.departmentList = serverData;
             },
     
-            async deleteDepartment(id)
+            async deleteDepartment(department)
             {
                     this.$store.dispatch('user/checkValidation', '/Department/DepartmentForm');
                     if (this.$store.state.user.logged === true)
@@ -98,17 +116,17 @@
                         const requestOptions = {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({id: id})
+                            body: JSON.stringify({id: department.Id})
                         };
                         const response = await fetch(this.$store.state.backendPath +"Department/Delete", requestOptions)
                     
                         if (response.status === 200)
                         {
-                            this.loadData()
+                            this.departmentList.splice(this.departmentList.indexOf(department))
                         }
                         else
                         {
-                            this.$store.commit('setMessage', 'Ошибка при удалении данных')
+                            this.$store.commit('setMessage', await response.json())
                         }
                     }
             },

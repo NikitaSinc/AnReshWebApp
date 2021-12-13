@@ -9,22 +9,32 @@
                     <label>ФИО: </label>
                     <input v-model="employee.Full_name" :placeholder="employee.Full_name">
                 </div>
+
                 <div class="form-group">
                     <label>Отдел: </label>
-                    <select v-model="department">
+                    <select v-model="selectedDepartment" @change="this.employee.Id_department = this.selectedDepartment.Id">
                         <option value="null" 
                         disabled hidden 
                         v-for="department in departmentList.filter(function(elem){if (elem.Id === employee.Id_department) return elem})" 
                         :key="department.Id">{{department.Name}}
                         </option>
-                        <option v-for="department in departmentList" :key="department.Id" :value="department">{{department.Name}}</option>
+                        <option v-for="department in departmentList" :key="department" v-bind:value="department">{{department.Name}}</option>
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label>Навыки: </label>
+                    <div>
+                        <select v-model="this.employee.Skills" multiple>
+                            <option v-for="skill in skillList" :value="skill.Id" :key="skill.Id">{{skill.Skill_name}} </option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label>Заработная плата: </label>
                     <input v-model="employee.Salary" :placeholder="employee.Salary">
                 </div>
-
 
                 <div class="form-group">
                     <button type="button" @click="sendData" >Сохранить</button>
@@ -44,8 +54,12 @@
 
         data(){
             return{
-                department:{type: Object()},
-                departmentList:{type: Array(), department:Object()}
+                selectedDepartment:null,
+                department:{},
+                departmentList:[{department:Object()}],
+                skill:{},
+                skillList:[{}],
+                index:Number
             }
         },
 
@@ -55,7 +69,13 @@
                 const response = await fetch(this.$store.state.backendPath +"Department/SendData")
                 const serverData = await response.json() 
                 this.departmentList = serverData;
-                this.department = null;
+            },
+
+            async getSkills()
+            {
+                const response = await fetch(this.$store.state.backendPath +"Skill/SendData")
+                const serverData = await response.json() 
+                this.skillList = serverData;
             },
 
             async sendData(){
@@ -71,14 +91,15 @@
                 }
                 else
                 {
-                    this.$store.commit('setMessage', 'Ошибка при редактировании данных')
+                    this.$store.commit('setMessage', await response.json())
                 }
             },
         },
 
         beforeMount()
-        {
-           this.loadDepartmentData();  
+        { 
+            this.getSkills();
+            this.loadDepartmentData();  
         },
         mounted()
         { 

@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using AnReshWebApp.Services;
+using Dapper;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,9 @@ namespace AnReshWebApp.Models
     }
     public class UsersRepository : IUsersRepository
     {
-        private readonly SqlConnection db = new SqlConnection(AppConfiguration.MSSQLConnection);
-
         public async Task<Users> LoginAsync(Users entity)
         {
-            using (db)
+            using (var db = DBConnectionFactory.CreateConnection())
             {
                 var result = await db.QueryAsync<Users>("SELECT * FROM Users WHERE Login=@login and Password= @password", entity);
                 return result.FirstOrDefault();
@@ -28,7 +27,7 @@ namespace AnReshWebApp.Models
         }
         public async Task<Users> GetByIdAsync(int id)
         {
-            using (db)
+            using (var db = DBConnectionFactory.CreateConnection())
             {
                 var result = await db.QueryAsync<Users>("SELECT * FROM Users WHERE Id=@id", new { id });
                 return result.FirstOrDefault();
@@ -37,7 +36,7 @@ namespace AnReshWebApp.Models
 
         public async Task<IReadOnlyList<Users>> GetAllAsync()
         {
-            using (db)
+            using (var db = DBConnectionFactory.CreateConnection())
             {
                 var result = await db.QueryAsync<Users>("SELECT * FROM Users");
                 return result.ToList();
@@ -46,7 +45,7 @@ namespace AnReshWebApp.Models
 
         public async Task<int> AddAsync(Users entity)
         {
-            using (db)
+            using (var db = DBConnectionFactory.CreateConnection())
             {
                 var result = await db.ExecuteAsync("INSERT INTO Users (Login, Password) VALUES(@Login, @Password)", entity);
                 return result;
@@ -56,7 +55,7 @@ namespace AnReshWebApp.Models
 
         public async Task<int> UpdateAsync(Users entity)
         {
-            using (db)
+            using (var db = DBConnectionFactory.CreateConnection())
             {
                 var sqlQuery = "UPDATE Users SET Login = @Login, Password = @Password WHERE Id = @Id";
                 var result = await db.ExecuteAsync(sqlQuery, entity);
@@ -66,7 +65,7 @@ namespace AnReshWebApp.Models
 
         public async Task<int> DeleteAsync(int id)
         {
-            using (db)
+            using (var db = DBConnectionFactory.CreateConnection())
             {
                 var sqlQuery = "DELETE FROM Users WHERE Id = @id";
                 var result = await db.ExecuteAsync(sqlQuery, new { id });

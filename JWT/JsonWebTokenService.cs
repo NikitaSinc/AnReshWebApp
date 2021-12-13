@@ -45,7 +45,7 @@ namespace AnReshWebApp.JWT
 			{
 				tokenHandler.ValidateToken(authToken, validationParameters, out var validatedToken);
 			}
-			catch (Exception)
+			catch (SecurityTokenExpiredException)
 			{
 				return new HttpStatusCodeResult(System.Net.HttpStatusCode.Unauthorized);
 			}

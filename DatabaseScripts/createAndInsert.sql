@@ -2,13 +2,13 @@ use master;
 drop database if exists AnReshProbation;
 create database  AnReshProbation;
 
-use [AnReshProbation];
-drop user if exists anreshuser;
-create user anreshuser without login;
-GRANT BACKUP DATABASE, BACKUP LOG, CREATE DEFAULT, CREATE FUNCTION, CREATE PROCEDURE, CREATE RULE, CREATE TABLE, CREATE VIEW TO anreshuser;
+use AnReshProbation
+drop table if exists EmployeeSkills;
+drop table if exists Users;
 drop table if exists Employee;
 drop table if exists Department;
-drop table if exists Users;
+drop table if exists Skills;
+
 create table Department (
 	Id int not null identity(1,1) primary key,
 	Name varchar(100) not null);
@@ -30,7 +30,7 @@ create table Employee (
 	Id_department int not null foreign key references Department(Id) on delete cascade,
 	Salary int not null default 12392);
     
-INSERT INTO [Employee] (Full_name,Id_department,Salary)
+INSERT Employee(Full_name,Id_department,Salary)
 VALUES
   ('Graham S. Baldwin',6,176030),
   ('Shelby N. Walsh',8,174982),
@@ -52,7 +52,7 @@ VALUES
   ('Ainsley Y. Fuentes',6,168466),
   ('Hashim G. Lester',5,178244),
   ('Mollie M. Mack',1,12900);
-INSERT INTO [Employee] (Full_name,Id_department,Salary)
+INSERT Employee (Full_name,Id_department,Salary)
 VALUES
   ('Alisa S. Lee',5,182891),
   ('Eagan O. Miles',8,158931),
@@ -74,100 +74,89 @@ VALUES
   ('Edward X. Hopper',2,105871),
   ('Nadine F. Andrews',5,107209),
   ('Benjamin R. Bush',7,120210);
-INSERT INTO [Employee] (Full_name,Id_department,Salary)
-VALUES
-  ('Tara Q. Burris',5,54632),
-  ('Ruby Q. Mccray',4,17813),
-  ('Fiona W. Britt',6,108583),
-  ('Fiona L. Chase',5,28536),
-  ('Bradley O. Walters',6,116245),
-  ('Gemma Y. Pruitt',8,177386),
-  ('Galvin N. Nicholson',6,46033),
-  ('Brent O. Allison',2,160291),
-  ('George T. Kaufman',6,38282),
-  ('Talon K. Calhoun',2,100570);
-INSERT INTO [Employee] (Full_name,Id_department,Salary)
-VALUES
-  ('Arden F. Palmer',3,111011),
-  ('Murphy W. Campbell',3,81176),
-  ('Bree S. Warner',2,165522),
-  ('Kirby U. Reyes',4,77981),
-  ('Slade U. Daniels',3,197863),
-  ('Benjamin N. Mccormick',3,67471),
-  ('Kay K. Mack',6,72349),
-  ('Eliana Y. Terry',3,156534),
-  ('Patrick S. York',4,117721),
-  ('Thaddeus R. Farrell',6,176273),
-  ('Evan O. Byrd',4,64456),
-  ('Kyla N. Wong',4,84813),
-  ('Hollee C. Whitehead',2,170571),
-  ('Nolan B. Larson',5,135906),
-  ('Solomon Q. Campos',4,81642),
-  ('Leslie B. Pruitt',5,61737),
-  ('Dominique H. Dotson',7,51142),
-  ('Trevor D. Pennington',5,114536),
-  ('Logan A. Stone',5,16226),
-  ('Reese X. Figueroa',3,137792);
-INSERT INTO [Employee] (Full_name,Id_department,Salary)
-VALUES
-  ('Germane M. Le',6,105040),
-  ('Jamal W. Dillon',8,28010),
-  ('Xena N. Mcfarland',1,72590),
-  ('Declan F. Mitchell',5,41866),
-  ('Sarah P. Reed',3,25198),
-  ('Mary D. Summers',1,98386),
-  ('Kenneth I. Lucas',7,29343),
-  ('Noel Y. Castaneda',5,132147),
-  ('Aristotle C. Alvarado',6,73101),
-  ('Malcolm T. Valenzuela',6,35677),
-  ('Jamalia Z. Gallagher',4,29896),
-  ('Wade Q. Lowery',5,121616),
-  ('Inez J. Welch',7,99865),
-  ('Germaine R. Bauer',5,25640),
-  ('Neil B. Terry',5,156670),
-  ('Aidan P. Velazquez',2,68713),
-  ('Samuel I. Moore',4,179999),
-  ('Victor T. Rogers',5,186844),
-  ('Dominic L. Nichols',8,50282),
-  ('Christian B. Farley',4,187204);
-INSERT INTO [Employee] (Full_name,Id_department,Salary)
-VALUES
-  ('Suki J. Hudson',7,166753),
-  ('Scott T. Hull',2,178773),
-  ('Lila G. Weeks',3,94700),
-  ('Kylie K. Calhoun',1,172700),
-  ('Kellie V. Pollard',8,100089),
-  ('Chaney B. Morton',6,15207),
-  ('Erica M. Brewer',7,156712),
-  ('Maile L. Gray',8,52040),
-  ('Matthew E. Buckner',4,57841),
-  ('Neil U. Summers',7,61824);
 
 create table Skills (
 	Id int not null identity(1,1) primary key,
 	Skill_name varchar(250) not null unique);
 
-INSERT INTO [Skills] (Skill_name)
+INSERT Skills (Skill_name)
 	VALUES
 	('C#'),
 	('JavaScript'),
 	('SQL');
 
 create table EmployeeSkills (
-	Id_employee int not null foreign key references Employee(Id),
-	Id_skills int not null foreign key references Skills(Id));
+	Id_employee int not null foreign key references Employee(Id) on delete cascade,
+	Id_skills int not null foreign key references Skills(Id) on delete cascade);
 
-INSERT INTO [EmployeeSkills] (Id_employee, Id_skills)
+INSERT EmployeeSkills (Id_employee, Id_skills)
 	VALUES
 	(1, 1),
 	(1, 2),
-	(1, 3);
+	(1, 3),
+	(2, 2),
+	(3, 2),
+	(3, 1),
+	(4, 2),
+	(5, 1),
+	(6, 1),
+	(7, 2),
+	(7, 3),
+	(8, 1),
+	(9, 2),
+	(10, 3),
+	(11, 2),
+	(12, 3),
+	(13, 2),
+	(13, 3),
+	(14, 1),
+	(15, 2),
+	(15, 3),
+	(16, 1),
+	(17, 1),
+	(17, 3),
+	(18, 3),
+	(19, 1),
+	(19, 2),
+	(19, 3),
+	(20, 2),
+	(20, 1),
+	(21, 1),
+	(21, 2),
+	(21, 3),
+	(22, 2),
+	(23, 2),
+	(23, 1),
+	(24, 2),
+	(25, 1),
+	(26, 1),
+	(27, 2),
+	(27, 3),
+	(28, 1),
+	(29, 2),
+	(30, 3),
+	(31, 2),
+	(32, 3),
+	(33, 2),
+	(33, 3),
+	(34, 1),
+	(35, 2),
+	(35, 3),
+	(36, 1),
+	(37, 1),
+	(37, 3),
+	(38, 3),
+	(39, 1),
+	(39, 2),
+	(39, 3),
+	(40, 2),
+	(40, 1);
 
  create table Users (
 	Id int not null identity(1,1) primary key,
 	Login varchar(50) not null unique,
 	Password varchar(50) not null);
 
-INSERT INTO [Users] (Login,Password)
+INSERT Users (Login,Password)
 	VALUES
 	('login', 'password');

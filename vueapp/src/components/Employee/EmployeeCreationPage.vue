@@ -5,10 +5,12 @@
                 <h2>Внесение данных о новом сотруднике</h2>
                 <hr />
                 <h3 style="warning" v-if="this.$store.state.messageVariable !== null">{{this.$store.state.messageVariable}}</h3>
+
                 <div class="form-group">
                     <label>ФИО: </label>
                     <input v-model="employee.Full_name" placeholder="ФИО">
                 </div>
+
                 <div class="form-group">
                     <label>Отдел: </label>
                     <select v-model="department">
@@ -16,6 +18,16 @@
                         <option v-for="department in departmentList" :key="department.Id" :value="department ">{{department.Name}}</option>
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label>Навыки: </label>
+                    <div>
+                        <select v-model="this.employee.Skills" multiple>
+                            <option v-for="skill in skillList" :value="skill.Id" :key="skill.Id">{{skill.Skill_name}} </option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label>Заработная плата: </label>
                     <input v-model="employee.Salary" placeholder="Заработная плата">
@@ -33,12 +45,15 @@
 <script>
     export default 
     {
+        props:{employee:Object},
         data()
         {
             return {
-                employee:{type: Object(), Id:Number(), Full_name: String(), Id_department: Number(), Salary: Number()},
-                department:{type: Object, Name: String(), Id: Number()},
-                departmentList:{type: Array, department:Object}
+                department:{Name: String(), Id: Number()},
+                departmentList:[{type: Array, department:Object}],
+                skill:{},
+                skillList:[{}],
+                index:Number
             }
         },
         methods:{
@@ -48,6 +63,13 @@
                 const serverData = await response.json() 
                 this.departmentList = serverData;
                 this.department = null;
+            },
+            
+            async getSkills()
+            {
+                const response = await fetch(this.$store.state.backendPath +"Skill/SendData")
+                const serverData = await response.json() 
+                this.skillList = serverData;
             },
 
             async sendData()
@@ -59,13 +81,14 @@
                     body: JSON.stringify({employee: this.employee})
                 };
                 const response = await fetch(this.$store.state.backendPath +"Employee/Create", requestOptions)
+                this.employee.Id = await response.json();
                 if (response.status === 200)
                 {
                     this.$emit('closeCreate')
                 }
                 else
                 {
-                    this.$store.commit('setMessage', 'Ошибка при редактировании данных')
+                    this.$store.commit('setMessage', await response.json())
                 }
             },
             
@@ -74,6 +97,7 @@
         {
             this.$store.dispatch('user/checkValidation', '/Employee/EmployeeForm');
             this.loadDepartmentData();
+            this.getSkills();
         }
     }
 </script>

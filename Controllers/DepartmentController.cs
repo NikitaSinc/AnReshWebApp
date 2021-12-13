@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using AnReshWebApp.Models;
+using AnReshWebApp.Filters;
 
 namespace AnReshWebApp.Controllers
 {
@@ -13,55 +14,73 @@ namespace AnReshWebApp.Controllers
     {
 
         public DepartmentRepository repository = new DepartmentRepository();
+        [HttpGet]
         public async Task<JsonResult> SendData()
         {
             var departmentsList = await repository.GetAllAsync();
-
             return Json(departmentsList,JsonRequestBehavior.AllowGet);
         }
-       
+
+        [HttpPost]
+        public async Task<JsonResult> SendData(Department department)
+        {
+            DepartmentFilter filter = new DepartmentFilter();
+            filter.SetFilter(department);
+
+            var departmentsList = await repository.GetAllAsyncFiltered(filter);
+            return Json(departmentsList, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult DepartmentForm()
         {
             return View("_Layout");
         }
 
-        public async Task<HttpStatusCodeResult> Delete(int id)
+        public async Task<JsonResult> Delete(int id)
         {
             try
             {
                 await repository.DeleteAsync(id);
             }
-            catch (Exception)
+            catch (Exception exeption)
             {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                return Json(exeption, JsonRequestBehavior.AllowGet);
             }
-            return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
-        public async Task<HttpStatusCodeResult> Edit(Department department)
+        public async Task<JsonResult> Edit(Department department)
         {
             try
             {
                 await repository.UpdateAsync(department);
             }
-            catch (Exception)
+            catch (Exception exeption)
             {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                return Json(exeption, JsonRequestBehavior.AllowGet);
             }
-            return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
-        public async Task<HttpStatusCodeResult> Create(Department department)
+        public async Task<JsonResult> Create(Department department)
         {
+            int id;
             try
             {
-                await repository.AddAsync(department);
+                id = await repository.AddAsync(department);
             }
-            catch (Exception)
+            catch (Exception exeption)
             {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                return Json(exeption, JsonRequestBehavior.AllowGet);
             }
-            return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
+
+            return Json(id, JsonRequestBehavior.AllowGet);
         }
     }
 }

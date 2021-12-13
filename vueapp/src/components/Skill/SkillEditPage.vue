@@ -40,7 +40,7 @@ export default
                 }
                 else
                 {
-                    this.$store.commit('setMessage', 'Ошибка при редактировании данных')
+                    this.$store.commit('setMessage', await response.json())
                 }
             }
         },

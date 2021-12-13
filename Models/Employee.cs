@@ -13,5 +13,7 @@ namespace AnReshWebApp.Models
 
         [ForeignKey("Id_department")]
         public int Id_department { get; set; }
+
+        public List<int> Skills { get; set; }
     }
 }

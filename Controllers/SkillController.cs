@@ -23,43 +23,51 @@ namespace AnReshWebApp.Controllers
             return View("_Layout");
         }
 
-        public async Task<HttpStatusCodeResult> Delete(int id)
+        public async Task<JsonResult> Delete(int id)
         {
             try
             {
                 await repository.DeleteAsync(id);
             }
-            catch (Exception)
+            catch (Exception exeption)
             {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                return Json(exeption, JsonRequestBehavior.AllowGet);
             }
-            return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
-        public async Task<HttpStatusCodeResult> Edit(Skills skill)
+        public async Task<JsonResult> Edit(Skills skill)
         {
             try
             {
                 await repository.UpdateAsync(skill);
             }
-            catch (Exception)
+            catch (Exception exeption)
             {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                return Json(exeption, JsonRequestBehavior.AllowGet);
             }
-            return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
-        public async Task<HttpStatusCodeResult> Create(Skills skill)
+        public async Task<JsonResult> Create(Skills skill)
         {
+            int id;
             try
             {
-                await repository.AddAsync(skill);
+               id = await repository.AddAsync(skill);
             }
-            catch (Exception)
+            catch (Exception exeption)
             {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                return Json(exeption, JsonRequestBehavior.AllowGet);
             }
-            return new HttpStatusCodeResult(System.Net.HttpStatusCode.OK);
+
+            return Json(id, JsonRequestBehavior.AllowGet);
         }
     }
 }

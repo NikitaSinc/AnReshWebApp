@@ -22,12 +22,7 @@
 <script>
 export default 
     {
-        data() 
-        {
-            return {
-                department:{Id:Number(), Name:String()}
-                }
-        },   
+        props: {department:Object},
 
         methods:
         {
@@ -41,11 +36,12 @@ export default
                 const response = await fetch(this.$store.state.backendPath +"Department/Create", requestOptions)
                 if (response.status === 200)
                 {
+                    this.department.Id = await response.json()
                     this.$emit('closeCreate')
                 }
                 else
                 {
-                    this.$store.commit('setMessage', 'Ошибка при добавлении данных')
+                    this.$store.commit('setMessage', await response.json())
                 }
             }
         },

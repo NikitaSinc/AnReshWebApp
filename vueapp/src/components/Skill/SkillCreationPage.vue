@@ -22,12 +22,7 @@
 <script>
 export default 
     {
-        data() 
-        {
-            return {
-                skill:{Id:Number(), Skill_name:String()}
-                }
-        },   
+        props:{skill: Object},
 
         methods:
         {
@@ -41,11 +36,12 @@ export default
                 const response = await fetch(this.$store.state.backendPath +"Skill/Create", requestOptions)
                 if (response.status === 200)
                 {
+                    this.skill.Id = await response.json()
                     this.$emit('closeCreate')
                 }
                 else
                 {
-                    this.$store.commit('setMessage', 'Ошибка при добавлении данных')
+                    this.$store.commit('setMessage', await response.json())
                 }
             }
         },

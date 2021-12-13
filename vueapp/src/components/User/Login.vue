@@ -7,8 +7,8 @@
     </div>
 </template>
 <script>
-import LoginForm from './LoginForm.vue'
-import UserProfile from './UserProfile.vue'
+import LoginForm from '@/components/User/LoginForm.vue'
+import UserProfile from '@/components/User/UserProfile.vue'
 
 export default {
     components: { LoginForm, UserProfile }
