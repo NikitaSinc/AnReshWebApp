@@ -1,58 +1,18 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    Access-Control-Allow-Origin: http://localhost:8081/
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8;" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Стажировка в аналитических решениях</title>
     @Styles.Render("~/Content/reset.css")
     @Styles.Render("~/Content/Site.css")
+    @Styles.Render("~/Content/JonSunhHamburgers.css")
     @Scripts.Render("~/node_modules/vue/dist/vue.min.js")
 </head>
 <body>
-    <header class="header">
-
-        <nav class="nav__bar">
-            <ol class="nav__list">
-
-                <li class="nav__list__item"> <a href="/Home/Index/">Работа с файлом</a></li>
-
-                <li class="nav__list__item">
-                    Работа с данными
-                    <ol>
-                        <li class="nav__list__item__sec"><a href="/Department/DepartmentForm/">Отделы</a></li>
-
-                        <li class="nav__list__item__sec"><a href="/Employee/EmployeeForm/">Сотрудники</a></li>
-                    </ol>
-                </li>
-            </ol>
-        </nav>
-
-        <div class="nav__top">
-            <div class="nav__top__user">
-                <p>
-                    <img src="~/Images/login__pic.png" alt="login" class="login__pic" />
-                    <a href"#">Заглушка Пользователя</a>
-                </p>
-            </div>
-        </div>
-
-        <div class="header__logo">
-            <a href="https://otc.ru" class="header__logo__link">
-                <img src="~/Images/header__logo__back.png" alt="OTC" class="header__logo__back" />
-                <img src="~/Images/header__logo__otc.png" alt="OTC" class="header__logo__otc" />
-            </a>
-        </div>
-    </header>
-
-    <div class="wrapper__content__form">
-        @RenderBody()
-    </div>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <div id="app"></div>
     <script type="text/javascript" src="http://localhost:8080/js/chunk-vendors.js"></script>
     <script type="text/javascript" src="http://localhost:8080/js/app.js"></script>
-    @*@RenderSection("scripts", required: false)*@
 </body>
 </html>

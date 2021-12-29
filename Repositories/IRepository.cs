@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AnReshWebApp.Models
 {
-    public interface IRepository<T> where T : class
+    public interface IRepository<T> where T : BaseEntity
     {
         Task<T> GetByIdAsync(int id);
         Task<IReadOnlyList<T>> GetAllAsync();

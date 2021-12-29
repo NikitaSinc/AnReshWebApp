@@ -1,63 +1,147 @@
 <template>
-    <div class="form-horizontal">
-        <h2>Редактирование данных сотрудника</h2>
-        <hr />
+    <div class="popup">
+        <div class="popup__window">
+            <div class="form-horizontal">
+                <h2>Редактирование данных сотрудника</h2>
+                <hr />
+                <h3 style="warning" v-if="this.$store.state.messageVariable !== null">{{this.$store.state.messageVariable}}</h3>
+                <div class="form-group">
+                    <label>ФИО: </label>
+                    <input v-model="employee.Full_name" :placeholder="employee.Full_name">
+                </div>
 
-        <div class="form-group">
-            <label>ФИО: </label>
-            <input v-model="full_name" :placeholder="full_name">
-        </div>
-        <div class="form-group">
-            <label>Отдел: </label>
-            <select v-model="department">
-                <option value="null" disabled hidden>{{departmentName}}</option>
-                <option v-for="department in departmentList" :key="department.id" :value="department">{{department.Name}}</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Заработная плата: </label>
-            <input v-model="salary" :placeholder="salary">
-        </div>
+                <div class="form-group">
+                    <label>Отдел: </label>
+                    <select v-model="selectedDepartment" @change="this.selectedSector = {}, this.selectedGroup = {}">
+                        <option :value="{}" >Не выбрано</option>
+                        <option v-for="department in departmentList" :key="department" v-bind:value="department">{{department.Name}}</option>
+                    </select>
+                </div>
 
+                <div class="form-group" v-if="JSON.stringify(selectedDepartment) !== '{}'">
+                    <label>Сектор: </label>
+                    <select v-model="selectedSector" @change="this.selectedGroup = {};">
+                        <option :value="{}" >Не выбрано</option>
+                        <option v-for="sector in selectedDepartment.Childrens" :key="sector" :value="sector">{{sector.Name}}</option>
+                    </select>
+                </div>
 
-        <div class="form-group">
-            <button type="button" @click="sendData" >Сохранить</button>
-            <router-link to="/Employee/EmployeeForm">Назад</router-link>
+                <div class="form-group" v-if="(JSON.stringify(selectedSector) !== '{}')">
+                    <label>Группа: </label>
+                    <select v-model="selectedGroup" @change="this.employee.Id_department = this.selectedGroup.Id;">
+                        <option :value="{}" >Не выбрано</option>
+                        <option v-for="group in selectedSector.Childrens" :key="group" :value="group">{{group.Name}}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Навыки: </label>
+                    <div>
+                        <select v-model="this.employee.Skills" multiple>
+                            <option v-for="skill in skillList" :value="skill.Id" :key="skill.Id">{{skill.Skill_name}} </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Заработная плата: </label>
+                    <input type="number" v-model="employee.Salary" :placeholder="employee.Salary">
+                </div>
+
+                <div class="form-group">
+                    <button type="button" @click="sendData" >Сохранить</button>
+                    <a href='#' @click="this.$emit('closeEdit')">Назад</a>
+                </div>
+            </div> 
         </div>
-    </div>  
+    </div> 
 </template>
 <script>
-export default {
-    data(){
-        return{
-            department:{type: Object},
-            departmentList:{type: Array, department:Object}
-        }
-    },
+    export default 
+    {
+        props: 
+        {
+            employee:Object
+        },
 
-    props: ['id', 'full_name', 'departmentName', 'departmentId', 'salary'],
-        methods:{
+        data(){
+            return{
+                selectedDepartment:{},
+                selectedSector:{},
+                selectedGroup:{},
+                department:{},
+                departmentList:[],
+                skill:{},
+                skillList:[{}],
+                index:Number
+            }
+        },
 
-            async loadDepartmentData(){
-                const response = await fetch("http://localhost:44305/Department/SendData")
-                const serverData = await response.json() 
-                this.departmentList = serverData;
-                this.department = null;
+        methods:
+        {
+            findGroup()
+            {
+                for (var i = 0; i<this.departmentList.length; i++)
+                {
+                    for (var y = 0; y<this.departmentList[i].Childrens.length; y++)
+                    {
+                        for (var z = 0; z<this.departmentList[i].Childrens[y].Childrens.length; z++)
+                        {
+                            if (this.departmentList[i].Childrens[y].Childrens[z].Id === this.employee.Id_department)
+                            {
+                                this.selectedGroup = this.departmentList[i].Childrens[y].Childrens[z];
+                                this.selectedSector = this.departmentList[i].Childrens[y];
+                                this.selectedDepartment = this.departmentList[i];
+                            }
+                        }
+                    }
+                }
             },
 
-            async sendData(){
+            async loadDepartmentData()
+            {
+                const response = await fetch(this.$store.state.backendPath +"Department/SendData")
+                const serverData = await response.json() 
+                this.departmentList = serverData;
+                this.findGroup();
+            },
+
+            async getSkills()
+            {
+                const response = await fetch(this.$store.state.backendPath +"Skill/SendData")
+                const serverData = await response.json() 
+                this.skillList = serverData;
+            },
+
+            async sendData()
+            {
                 const requestOptions = {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({id: this.id, full_name: this.full_name, departmentId: this.department.Id, salary: this.salary})
+                    body: JSON.stringify({employee: this.employee})
                 };
-                fetch("http://localhost:44305/Employee/Edit", requestOptions),
-                this.$router.push('/Employee/EmployeeForm')
+                const response = await fetch(this.$store.state.backendPath +"Employee/Edit", requestOptions)
+                if (response.status === 200)
+                {
+                    this.$emit('closeEdit')
+                }
+                else
+                {
+                    this.$store.commit('setMessage', await response.json())
+                }
             },
         },
-        beforeMount(){
-                this.loadDepartmentData();
-            }
-}
 
+        beforeMount()
+        { 
+            this.getSkills();
+            this.loadDepartmentData();  
+            
+        },
+        mounted()
+        { 
+            this.$store.dispatch('user/checkValidation', '/Employee/EmployeeForm');    
+        }
+    }
 </script>
+

@@ -6,14 +6,14 @@ using System.Web;
 
 namespace AnReshWebApp.Models
 {
-    public class Employee
+    public class Employee : BaseEntity
     {
-        public int Id { get; set; }
         public string Full_name { get; set; }
         public int Salary { get; set; }
 
         [ForeignKey("Id_department")]
         public int Id_department { get; set; }
-        public Department Department { get; set; }
+
+        public List<int> Skills { get; set; }
     }
 }

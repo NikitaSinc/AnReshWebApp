@@ -5,11 +5,10 @@ using System.Web;
 
 namespace AnReshWebApp.Models
 {
-    public class Department
+    public class Department : BaseEntity
     {
-        public int Id { get; set; }
-
+        public List<Department> Childrens { get; set; }
+        public int Pid { get; set; }
         public string Name { get; set; }
-
     }
 }

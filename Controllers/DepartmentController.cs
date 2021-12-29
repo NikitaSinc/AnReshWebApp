@@ -4,48 +4,75 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using AnReshWebApp.Cors;
 using AnReshWebApp.Models;
+using AnReshWebApp.Filters;
 
 namespace AnReshWebApp.Controllers
 {
-    [AllowCrossSiteJson]
+
     public class DepartmentController : Controller
     {
 
         public DepartmentRepository repository = new DepartmentRepository();
-        public async Task<JsonResult> SendData()
-        {
-            var departmentsList = await repository.GetAllAsync();
+        public DepartmentFilter filter = new DepartmentFilter();
 
-            return Json(departmentsList,JsonRequestBehavior.AllowGet);
+        public async Task<JsonResult> SendData(Department department)
+        {
+            filter.SetFilter(department);
+            var departmentsList = await repository.GetAllAsyncFiltered(filter);
+            return Json(departmentsList, JsonRequestBehavior.AllowGet);
         }
-       
+
         public ActionResult DepartmentForm()
         {
-            return View();
+            return View("_Layout");
         }
 
-        public async Task<ActionResult> Delete(int id)
+        public async Task<JsonResult> Delete(int id)
         {
-            await repository.DeleteAsync(id);
-            return RedirectToAction("DepartmentForm");
+            try
+            {
+                await repository.DeleteAsync(id);
+            }
+            catch (Exception exeption)
+            {
+                new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                return Json(exeption, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
-        public async Task<ActionResult> Edit(int id, string name)
+        public async Task<JsonResult> Edit(Department department)
         {
-            Department department = new Department();
-            department.Id = id; department.Name = name;
-            await repository.UpdateAsync(department);
-            return RedirectToAction("DepartmentForm");
+            try
+            {
+                await repository.UpdateAsync(department);
+            }
+            catch (Exception exeption)
+            {
+                new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                return Json(exeption, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
-        public async Task<ActionResult> Create(string name)
+        [HttpPost]
+        public async Task<JsonResult> Create(Department department)
         {
-            Department department = new Department();
-            department.Name = name;
-            await repository.AddAsync(department);
-            return RedirectToAction("DepartmentForm");
+            int id;
+            try
+            {
+                id = await repository.AddAsync(department);
+            }
+            catch (Exception exeption)
+            {
+                new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                return Json(exeption, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(id, JsonRequestBehavior.AllowGet);
         }
     }
 }

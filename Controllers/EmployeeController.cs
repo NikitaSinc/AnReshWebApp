@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using AnReshWebApp.Filters;
 using System.Web.Mvc;
 
 namespace AnReshWebApp.Controllers
@@ -12,38 +13,65 @@ namespace AnReshWebApp.Controllers
     {
         public EmployeeRepository employeeRepository = new EmployeeRepository();
         public DepartmentRepository departmentRepository = new DepartmentRepository();
+        public Paginator paginator = new Paginator();
+        public EmployeeFilter filter = new EmployeeFilter();
 
-        public async Task<JsonResult> SendData()
+        [HttpPost]
+        public async Task<JsonResult> SendData(EmployeeFilterModel employeeFilterModel, int currentPage = 1, int rowPerPage = 10)
         {
-            var employeeList = await employeeRepository.GetAllAsync();
-
-            return Json(employeeList, JsonRequestBehavior.AllowGet);
+            paginator.SetPageSize(currentPage, rowPerPage);
+            filter.SetFilter(employeeFilterModel);
+            var employeeList = await employeeRepository.GetAllAsyncFiltered(filter, paginator);
+            return Json(new { employeeList , paginator}, JsonRequestBehavior.AllowGet) ;
         }
 
-        public async Task<ActionResult> EmployeeForm()
+        public ActionResult EmployeeForm()
         {
-            return View(await employeeRepository.GetAllAsync());
+            return View("_Layout");
         }
-        public async Task<ActionResult> Delete(int id)
+        public async Task<JsonResult> Delete(int id)
         {
-            await employeeRepository.DeleteAsync(id);
-            return RedirectToAction("EmployeeForm");
+            try
+            {
+                await employeeRepository.DeleteAsync(id);
+            }
+            catch (Exception exeption)
+            {
+                new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                return Json(exeption, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(JsonRequestBehavior.AllowGet);
+        }
+    
+        public async Task<JsonResult> Edit(Employee employee)
+        {
+            try
+            {
+                await employeeRepository.UpdateAsync(employee);
+            }
+            catch (Exception exeption)
+            {
+                new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                return Json(exeption, JsonRequestBehavior.AllowGet); 
+            }
+
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
-        public async Task<ActionResult> Edit(int id, string full_name, int departmentId, int salary)
+        public async Task<JsonResult> Create(Employee employee)
         {
-            Employee employee = new Employee();
-            employee.Id = id; employee.Full_name = full_name; employee.Salary = salary; employee.Id_department = departmentId;
-            await employeeRepository.UpdateAsync(employee);
-            return RedirectToAction("EmployeeForm");
-        }
-
-        public async Task<ActionResult> Create( string full_name, int departmentId, int salary)
-        {
-            Employee employee = new Employee();
-            employee.Full_name = full_name; employee.Salary = salary; employee.Id_department = departmentId;
-            await employeeRepository.AddAsync(employee);
-            return RedirectToAction("EmployeeForm");
+            int id;
+            try
+            {
+               id = await employeeRepository.AddAsync(employee);
+            }
+            catch (Exception exeption)
+            {
+                new HttpStatusCodeResult(System.Net.HttpStatusCode.InternalServerError);
+                return Json(exeption, JsonRequestBehavior.AllowGet); 
+            }       
+            return Json(id, JsonRequestBehavior.AllowGet);
         }
     }
 }

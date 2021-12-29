@@ -1,40 +1,100 @@
 <template>
-<div id="app">
-    <form class="form-horizontal" @submit.prevent>
-        <h2>Создание отдела</h2>
-        <hr />
-            <div class="form-group">
-                <label>Название: </label>
-                <input v-model="name" placeholder="Новый отдел">
-            </div>
+    <div class="popup">
+        <div class="popup__window">
+            <div class="form-horizontal">
+                <h2>Создание подразделения</h2>
+                <hr />
+                <h3 style="warning" v-if="this.$store.state.messageVariable !== null">{{this.$store.state.messageVariable}}</h3>
+                <div class="form-group">
+                    <label>Название: </label>
+                    <input v-model="department.Name" placeholder="Новое подразделение">
+                </div>
 
-            <div class="form-group">
-                <button type="button" @click="sendData" >Сохранить</button>
-                <router-link to="/Department/DepartmentForm">Назад</router-link>
-            </div>
-    </form>
-</div>
+                <div class="form-group">
+                    <label> Вышестоящий отдел </label>
+                    <select v-model="selectedDepartment" @change="selectedSector = {}">
+                        <option :value="{}">
+                            Корневой
+                        </option>
+                        <option v-for="department in departmentList" :key="department" :value="department">
+                            {{department.Name}}
+                        </option>
+                    </select>
+                </div>
 
+                <div class="form-group" v-if="JSON.stringify(selectedDepartment) !== '{}'">
+                    <label> Вышестоящий сектор </label>
+                    <select v-model="selectedSector">
+                        <option :value="{}">
+                            {{selectedDepartment.Name}}/
+                        </option>
+                        <option v-for="sector in selectedDepartment.Childrens" :key="sector" :value="sector">
+                            {{selectedDepartment.Name}}/{{sector.Name}}
+                        </option>
+                    </select>
+                </div>                
+
+                <div class="form-group">
+                    <button type="button" @click="sendData" >Сохранить</button>
+                    <a href='#' @click="this.$emit('closeCreate')">Назад</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
-export default {
-    data(){
-        return{
-              name: '',  
-            }
-        },   
+export default 
+    {
+        props: {departmentList:Array},
 
-    methods:{
-        async sendData(){
-            const requestOptions = {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: this.name })
-            };
-            fetch("http://localhost:44305/Department/Create", requestOptions),
-            this.$router.push('/Department/DepartmentForm')
+        data(){
+            return{
+                selectedDepartment:{},
+                selectedSector:{},
+                department:{},
+            }
+        },
+
+        methods:
+        {
+            async sendData()
+            {
+                if(JSON.stringify(this.selectedSector) !== '{}')
+                {
+                    this.department.Pid = this.selectedSector.Id
+                }
+                else
+                {
+                    if (JSON.stringify(this.selectedDepartment) !== '{}')
+                    {
+                        this.department.Pid = this.selectedDepartment.Id
+                    }
+                    else 
+                    {
+                        this.department.Pid = 0
+                    }
+                }
+                const requestOptions = {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ department: this.department })
+                };
+                const response = await fetch(this.$store.state.backendPath +"Department/Create", requestOptions)
+                if (response.status === 200)
+                {
+                    this.department.Id = await response.json()
+                    this.$emit('closeCreate')
+                }
+                else
+                {
+                    this.$store.commit('setMessage', await response.json())
+                }
+            }
+        },
+        beforeMount()
+        {
+            this.$store.dispatch('user/checkValidation', '/Department/DepartmentForm')
         }
     }
-}
 </script>
