@@ -14,19 +14,11 @@ namespace AnReshWebApp.Controllers
     {
 
         public DepartmentRepository repository = new DepartmentRepository();
-        [HttpGet]
-        public async Task<JsonResult> SendData()
-        {
-            var departmentsList = await repository.GetAllAsync();
-            return Json(departmentsList,JsonRequestBehavior.AllowGet);
-        }
+        public DepartmentFilter filter = new DepartmentFilter();
 
-        [HttpPost]
         public async Task<JsonResult> SendData(Department department)
         {
-            DepartmentFilter filter = new DepartmentFilter();
             filter.SetFilter(department);
-
             var departmentsList = await repository.GetAllAsyncFiltered(filter);
             return Json(departmentsList, JsonRequestBehavior.AllowGet);
         }

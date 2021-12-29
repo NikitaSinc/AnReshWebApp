@@ -21,7 +21,7 @@ namespace AnReshWebApp.Filters
         {
             if (department.Name != null)
             {
-                departmentRow = " WHERE CHARINDEX(@Name, Name)>0";
+                departmentRow = " and Name like '%'+@Name+'%'";
             }
         }
     }

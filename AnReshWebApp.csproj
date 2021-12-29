@@ -381,11 +381,14 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\DepartmentFilter.cs" />
     <Compile Include="Filters\EmployeeFilter.cs" />
+    <Compile Include="Filters\Paginator.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="JWT\JsonWebTokenService.cs" />
     <Compile Include="Models\BaseEntity.cs" />
+    <Compile Include="Models\EmployeeFilterModel.cs" />
+    <Compile Include="Models\EmployeeSkills.cs" />
     <Compile Include="Models\Skills.cs" />
     <Compile Include="Models\Users.cs" />
     <Compile Include="Repositories\IRepository.cs" />
@@ -400,6 +403,7 @@
     <Compile Include="Services\DBConnectionFactory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\JonSunhHamburgers.css" />
     <Content Include="Content\reset.css" />
     <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />

@@ -12,13 +12,25 @@
 
                 <div class="form-group">
                     <label>Отдел: </label>
-                    <select v-model="selectedDepartment" @change="this.employee.Id_department = this.selectedDepartment.Id">
-                        <option value="null" 
-                        disabled hidden 
-                        v-for="department in departmentList.filter(function(elem){if (elem.Id === employee.Id_department) return elem})" 
-                        :key="department.Id">{{department.Name}}
-                        </option>
+                    <select v-model="selectedDepartment" @change="this.selectedSector = {}, this.selectedGroup = {}">
+                        <option :value="{}" >Не выбрано</option>
                         <option v-for="department in departmentList" :key="department" v-bind:value="department">{{department.Name}}</option>
+                    </select>
+                </div>
+
+                <div class="form-group" v-if="JSON.stringify(selectedDepartment) !== '{}'">
+                    <label>Сектор: </label>
+                    <select v-model="selectedSector" @change="this.selectedGroup = {};">
+                        <option :value="{}" >Не выбрано</option>
+                        <option v-for="sector in selectedDepartment.Childrens" :key="sector" :value="sector">{{sector.Name}}</option>
+                    </select>
+                </div>
+
+                <div class="form-group" v-if="(JSON.stringify(selectedSector) !== '{}')">
+                    <label>Группа: </label>
+                    <select v-model="selectedGroup" @change="this.employee.Id_department = this.selectedGroup.Id;">
+                        <option :value="{}" >Не выбрано</option>
+                        <option v-for="group in selectedSector.Childrens" :key="group" :value="group">{{group.Name}}</option>
                     </select>
                 </div>
 
@@ -33,7 +45,7 @@
 
                 <div class="form-group">
                     <label>Заработная плата: </label>
-                    <input v-model="employee.Salary" :placeholder="employee.Salary">
+                    <input type="number" v-model="employee.Salary" :placeholder="employee.Salary">
                 </div>
 
                 <div class="form-group">
@@ -54,9 +66,11 @@
 
         data(){
             return{
-                selectedDepartment:null,
+                selectedDepartment:{},
+                selectedSector:{},
+                selectedGroup:{},
                 department:{},
-                departmentList:[{department:Object()}],
+                departmentList:[],
                 skill:{},
                 skillList:[{}],
                 index:Number
@@ -65,10 +79,31 @@
 
         methods:
         {
-            async loadDepartmentData(){
+            findGroup()
+            {
+                for (var i = 0; i<this.departmentList.length; i++)
+                {
+                    for (var y = 0; y<this.departmentList[i].Childrens.length; y++)
+                    {
+                        for (var z = 0; z<this.departmentList[i].Childrens[y].Childrens.length; z++)
+                        {
+                            if (this.departmentList[i].Childrens[y].Childrens[z].Id === this.employee.Id_department)
+                            {
+                                this.selectedGroup = this.departmentList[i].Childrens[y].Childrens[z];
+                                this.selectedSector = this.departmentList[i].Childrens[y];
+                                this.selectedDepartment = this.departmentList[i];
+                            }
+                        }
+                    }
+                }
+            },
+
+            async loadDepartmentData()
+            {
                 const response = await fetch(this.$store.state.backendPath +"Department/SendData")
                 const serverData = await response.json() 
                 this.departmentList = serverData;
+                this.findGroup();
             },
 
             async getSkills()
@@ -78,7 +113,8 @@
                 this.skillList = serverData;
             },
 
-            async sendData(){
+            async sendData()
+            {
                 const requestOptions = {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -100,10 +136,11 @@
         { 
             this.getSkills();
             this.loadDepartmentData();  
+            
         },
         mounted()
         { 
-            this.$store.dispatch('user/checkValidation', '/Employee/EmployeeForm');
+            this.$store.dispatch('user/checkValidation', '/Employee/EmployeeForm');    
         }
     }
 </script>

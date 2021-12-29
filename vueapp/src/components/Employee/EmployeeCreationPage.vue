@@ -13,9 +13,25 @@
 
                 <div class="form-group">
                     <label>Отдел: </label>
-                    <select v-model="department">
-                        <option value="null" disabled hidden>Отдел</option>
-                        <option v-for="department in departmentList" :key="department.Id" :value="department ">{{department.Name}}</option>
+                    <select v-model="selectedDepartment" @change="this.selectedSector = {}; this.selectedGroup = {};">
+                        <option :value="{}" disabled hidden>Отдел</option>
+                        <option v-for="department in departmentList" :key="department" :value="department ">{{department.Name}}</option>
+                    </select>
+                </div>
+
+                <div class="form-group" v-if="JSON.stringify(selectedDepartment) !== '{}'">
+                    <label>Сектор: </label>
+                    <select v-model="selectedSector" @change="this.selectedGroup = {};">
+                        <option :value="{}" >Не выбрано</option>
+                        <option v-for="sector in selectedDepartment.Childrens" :key="sector" :value="sector">{{sector.Name}}</option>
+                    </select>
+                </div>
+
+                <div class="form-group" v-if="(JSON.stringify(selectedSector) !== '{}')">
+                    <label>Группа: </label>
+                    <select v-model="selectedGroup" @change=" this.department = selectedGroup;">
+                        <option :value="{}" >Не выбрано</option>
+                        <option v-for="group in selectedSector.Childrens" :key="group" :value="group">{{group.Name}}</option>
                     </select>
                 </div>
 
@@ -30,7 +46,7 @@
 
                 <div class="form-group">
                     <label>Заработная плата: </label>
-                    <input v-model="employee.Salary" placeholder="Заработная плата">
+                    <input type="number" v-model="employee.Salary" placeholder="Заработная плата">
                 </div>
 
 
@@ -49,10 +65,13 @@
         data()
         {
             return {
-                department:{Name: String(), Id: Number()},
-                departmentList:[{type: Array, department:Object}],
+                selectedDepartment:{},
+                selectedSector:{},
+                selectedGroup:{},
+                department:{},
+                departmentList:[],
                 skill:{},
-                skillList:[{}],
+                skillList:[],
                 index:Number
             }
         },
@@ -74,22 +93,30 @@
 
             async sendData()
             {
-                this.employee.Id_department = this.department.Id
-                const requestOptions = {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({employee: this.employee})
-                };
-                const response = await fetch(this.$store.state.backendPath +"Employee/Create", requestOptions)
-                this.employee.Id = await response.json();
-                if (response.status === 200)
+                if ((this.employee.Full_name === "") || (this.department.Id === 0) || (this.employee.skillList === []))
                 {
-                    this.$emit('closeCreate')
+                    this.$store.commit('setMessage', 'Заполните все поля!')
                 }
                 else
                 {
-                    this.$store.commit('setMessage', await response.json())
+                    this.employee.Id_department = this.department.Id
+                    const requestOptions = {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({employee: this.employee})
+                    };
+                    const response = await fetch(this.$store.state.backendPath +"Employee/Create", requestOptions)
+                    this.employee.Id = await response.json();
+                    if (response.status === 200)
+                    {
+                        this.$emit('closeCreate')
+                    }
+                    else
+                    {
+                        this.$store.commit('setMessage', await response.json())
+                    }
                 }
+
             },
             
         },

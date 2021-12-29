@@ -13,21 +13,16 @@ namespace AnReshWebApp.Controllers
     {
         public EmployeeRepository employeeRepository = new EmployeeRepository();
         public DepartmentRepository departmentRepository = new DepartmentRepository();
+        public Paginator paginator = new Paginator();
+        public EmployeeFilter filter = new EmployeeFilter();
 
         [HttpPost]
-        public async Task<JsonResult> SendData(Employee employee)
+        public async Task<JsonResult> SendData(EmployeeFilterModel employeeFilterModel, int currentPage = 1, int rowPerPage = 10)
         {
-                EmployeeFilter filter = new EmployeeFilter();
-                filter.SetFilter(employee);
-                var employeeList = await employeeRepository.GetAllAsyncFiltered(filter);
-                return Json(employeeList, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> SendData()
-        {
-                var employeeList = await employeeRepository.GetAllAsync();
-                return Json(employeeList, JsonRequestBehavior.AllowGet);     
+            paginator.SetPageSize(currentPage, rowPerPage);
+            filter.SetFilter(employeeFilterModel);
+            var employeeList = await employeeRepository.GetAllAsyncFiltered(filter, paginator);
+            return Json(new { employeeList , paginator}, JsonRequestBehavior.AllowGet) ;
         }
 
         public ActionResult EmployeeForm()

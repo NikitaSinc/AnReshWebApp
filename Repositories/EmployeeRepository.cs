@@ -18,6 +18,22 @@ namespace AnReshWebApp.Models
 
     public class EmployeeRepository : IEmployeeRepository
     {
+        public int GetAVGSalary(string row, EmployeeFilterModel employee = null)
+        {
+            using (var db = DBConnectionFactory.CreateConnection())
+            {
+                return db.QueryFirst<int>("select AVG(Salary) from (" + row + ") as AVGSalary", employee);
+            }
+        }
+
+        public int Count(string row, EmployeeFilterModel employee = null) 
+        { 
+            using (var db = DBConnectionFactory.CreateConnection())
+            {
+               return db.QueryFirst<int>("select count(*) from ("+row+") as counter", employee);
+            }
+        }
+
         public async Task<Employee> GetByIdAsync(int id)
         {
             using (var db = DBConnectionFactory.CreateConnection())
@@ -31,49 +47,42 @@ namespace AnReshWebApp.Models
         {
             using (var db = DBConnectionFactory.CreateConnection())
             {
-                var result = await db.QueryAsync<Employee>("select * from Employee");
-                var emploeeList = result.ToList();
-                foreach (Employee employee in emploeeList)
+                string sql = "select* from Employee; select * from EmployeeSkills";
+                using (var multi = await db.QueryMultipleAsync(sql))
                 {
-                    int id = employee.Id;
-                    var skillsList = await db.QueryAsync<int>("select Id_skills from EmployeeSkills where Id_employee = @id", new {id});
-                    employee.Skills = skillsList.ToList();
+                    var employee = multi.Read<Employee>();
+                    var skills = multi.Read<EmployeeSkills>();
+                    return employee.Select(x => new Employee {
+                        Id = x.Id,
+                        Full_name = x.Full_name,
+                        Id_department = x.Id_department,
+                        Salary = x.Salary,
+                        Skills = skills.Where(y => y.Id_employee == x.Id).Select(y => y.Id_skills).ToList(),
+                    }).ToList();
                 }
-                return emploeeList;
             }
         }
 
-        public async Task<IReadOnlyList<Employee>> GetAllAsyncFiltered(EmployeeFilter filter)
+        public async Task<IReadOnlyList<Employee>> GetAllAsyncFiltered(EmployeeFilter filter, Paginator paginator)
         {
-            using (var db = DBConnectionFactory.CreateConnection())
+            using (var db = DBConnectionFactory.CreateConnection()) //unit of work
             {
-                var result = await db.QueryAsync<Employee>("select * from Employee "+filter.empoloyeeRow, filter.employee);
-                var employeeList = result.ToList();
-                List<Employee> onRemoveEmployeeList = new List<Employee>();
-                foreach (Employee employee in employeeList)
+                string sqlEmployee = "select * from (select *, ROW_NUMBER() over(order by Id) as RowNum from Employee " + filter.SQLRow + ") as Numbers " ;
+                paginator.Paginate(Count(sqlEmployee, filter.employee), GetAVGSalary(sqlEmployee, filter.employee));
+                string sqlEmployeeSkills = "; select * from EmployeeSkills ";
+                string sql = sqlEmployee + paginator.SQLRow() + sqlEmployeeSkills;
+                using (var multi = await db.QueryMultipleAsync(sql, filter.employee))
                 {
-                    int id = employee.Id;
-                    var skillsList = await db.QueryAsync<int>("select Id_skills from EmployeeSkills where Id_employee = @id", new { id });
-                    employee.Skills = skillsList.ToList();
-                    bool check = true;
-                    if (filter.employee.Skills != null)
-                    {
-                        foreach (int value in filter.employee.Skills)
-                        {
-                            if (skillsList.Contains(value) == false)
-                            {
-                                check = false;
-                                break;
-                            }
-                        }
-                  
-                        if(check == false)
-                        {
-                            onRemoveEmployeeList.Add(employee);
-                        }  
-                    }
+                    var employee = multi.Read<Employee>();
+                    var skills = multi.Read<EmployeeSkills>();
+                    return employee.Select(x => new Employee {
+                        Id = x.Id,
+                        Full_name = x.Full_name,
+                        Id_department = x.Id_department,
+                        Salary = x.Salary,
+                        Skills = skills.Where(y => y.Id_employee == x.Id).Select(y => y.Id_skills).ToList(),
+                    }).ToList();
                 }
-                return employeeList.Except(onRemoveEmployeeList).ToList();
             }
         }
 

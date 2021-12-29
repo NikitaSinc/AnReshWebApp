@@ -2,13 +2,37 @@
     <div class="popup">
         <div class="popup__window">
             <div class="form-horizontal">
-                <h2>Создание отдела</h2>
+                <h2>Создание подразделения</h2>
                 <hr />
                 <h3 style="warning" v-if="this.$store.state.messageVariable !== null">{{this.$store.state.messageVariable}}</h3>
                 <div class="form-group">
                     <label>Название: </label>
-                    <input v-model="department.Name" placeholder="Новый отдел">
+                    <input v-model="department.Name" placeholder="Новое подразделение">
                 </div>
+
+                <div class="form-group">
+                    <label> Вышестоящий отдел </label>
+                    <select v-model="selectedDepartment" @change="selectedSector = {}">
+                        <option :value="{}">
+                            Корневой
+                        </option>
+                        <option v-for="department in departmentList" :key="department" :value="department">
+                            {{department.Name}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group" v-if="JSON.stringify(selectedDepartment) !== '{}'">
+                    <label> Вышестоящий сектор </label>
+                    <select v-model="selectedSector">
+                        <option :value="{}">
+                            {{selectedDepartment.Name}}/
+                        </option>
+                        <option v-for="sector in selectedDepartment.Childrens" :key="sector" :value="sector">
+                            {{selectedDepartment.Name}}/{{sector.Name}}
+                        </option>
+                    </select>
+                </div>                
 
                 <div class="form-group">
                     <button type="button" @click="sendData" >Сохранить</button>
@@ -22,12 +46,35 @@
 <script>
 export default 
     {
-        props: {department:Object},
+        props: {departmentList:Array},
+
+        data(){
+            return{
+                selectedDepartment:{},
+                selectedSector:{},
+                department:{},
+            }
+        },
 
         methods:
         {
             async sendData()
             {
+                if(JSON.stringify(this.selectedSector) !== '{}')
+                {
+                    this.department.Pid = this.selectedSector.Id
+                }
+                else
+                {
+                    if (JSON.stringify(this.selectedDepartment) !== '{}')
+                    {
+                        this.department.Pid = this.selectedDepartment.Id
+                    }
+                    else 
+                    {
+                        this.department.Pid = 0
+                    }
+                }
                 const requestOptions = {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

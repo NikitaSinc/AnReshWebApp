@@ -2,21 +2,23 @@
     <h1>Отделы</h1>
     <h3 style="warning" v-if="this.$store.state.messageVariable !== null">{{this.$store.state.messageVariable}}</h3>
     <department-creation-page 
-        v-bind:department = department
+        v-bind:departmentList = departmentList
         v-if="showCreate"
         @closeCreate="closeCreate"    
     />
     <department-edit-page 
         v-bind:department = department
+        v-bind:departmentList = departmentList
         v-if="showEdit"
-        @closeEdit="closeEdit"    
+        @closeEdit="closeEdit"  
+        @delete="deleteDepartment"  
     />
 
     <div>
         <h2>Фильтры</h2>
         <br>
-        <label>ФИО: </label>
-        <input v-model="department.Name" placeholder="Начните вводить ФИО" @input="filter()">
+        <label>Название: </label>
+        <input v-model="filter.Name" placeholder="Начните вводить название" @input="loadData()">
     </div>
 
     <table class="table">
@@ -26,6 +28,12 @@
             </th>
             <th>
                 Отдел
+            </th>
+            <th>
+                Секторы
+            </th>
+            <th>
+                Группы
             </th>
             <th>
                 Операции
@@ -39,6 +47,19 @@
             <td>
                 {{department.Name}}
             </td>
+            <td >
+                <tr v-for="sector in department.Childrens" :key="sector">
+                    {{sector.Name}}
+                </tr>
+            </td>
+            <td>
+                <tr v-for="sector in department.Childrens" :key="sector">
+                    <tr v-for="group in sector.Childrens" :key="group">
+                        {{group.Name}}
+                    </tr>
+                </tr>
+            </td>
+            
             <td>
                 <a href='#' @click="() => {this.department = department; showEdit = true}">Изменить</a> | <a href='#' @click="deleteDepartment(department)">Удалить</a>
             </td>
@@ -49,7 +70,12 @@
             <td>
                 Новый отдел
             </td>
-
+            <td>
+                Новый сектор
+            </td>
+            <td>
+                Новая группа
+            </td>
             <td>
                 <a href='#' @click="()=>{this.department={};showCreate = true}">Добавить</a>
             </td>
@@ -69,10 +95,11 @@
         data()
         {
             return {
+                filter:{},
                 showEdit: false,
                 showCreate: false,
                 department:{},
-                departmentList:[{}]
+                departmentList:[]
             }
         },
 
@@ -80,55 +107,50 @@
         {
             closeCreate()
             {
-                this.departmentList.push(this.department)
                 this.showCreate = false
+                this.loadData()
             },
 
             closeEdit()
             {
                 this.showEdit = false
-            },
-
-            async filter()
-            {
-                const requestOptions = {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({department: this.department})
-                        };
-                const response = await fetch(this.$store.state.backendPath +"Department/SendData", requestOptions)
-                const serverData = await response.json() 
-                this.departmentList = serverData;
+                this.loadData()
             },
 
             async loadData()
             {
-                const response = await fetch(this.$store.state.backendPath +"Department/SendData")
+                const requestOptions = {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({department: this.filter})
+                        };
+                const response = await fetch(this.$store.state.backendPath +"Department/SendData", requestOptions)
                 const serverData = await response.json() 
                 this.departmentList = serverData;
             },
     
             async deleteDepartment(department)
             {
-                    this.$store.dispatch('user/checkValidation', '/Department/DepartmentForm');
-                    if (this.$store.state.user.logged === true)
+                this.$store.dispatch('user/checkValidation', '/Department/DepartmentForm');
+                if (this.$store.state.user.logged === true)
+                {
+                    const requestOptions = {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({id: department.Id})
+                    };
+                    const response = await fetch(this.$store.state.backendPath +"Department/Delete", requestOptions)
+                
+                    if (response.status === 200)
                     {
-                        const requestOptions = {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({id: department.Id})
-                        };
-                        const response = await fetch(this.$store.state.backendPath +"Department/Delete", requestOptions)
-                    
-                        if (response.status === 200)
-                        {
-                            this.departmentList.splice(this.departmentList.indexOf(department))
-                        }
-                        else
-                        {
-                            this.$store.commit('setMessage', await response.json())
-                        }
+                        this.loadData()
                     }
+                    else
+                    {
+                        this.$store.commit('setMessage', await response.json())
+                    }
+                }
+                this.showEdit = false
             },
         },
         mounted()

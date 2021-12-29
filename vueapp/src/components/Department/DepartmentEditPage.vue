@@ -11,6 +11,34 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Управление секторами: </label>
+                    <select v-model="selectedSector">
+                        <option :value="{}" disabled hidden>
+                            Выберите сектор
+                        </option>
+                        <option v-for="sector in department.Childrens" :key="sector" :value="sector">
+                            {{sector.Name}}
+                        </option>
+                    </select>
+
+                    <a href='#' @click="this.$emit('delete',selectedSector);">Удалить</a>
+                </div>    
+
+                <div class="form-group">
+                    <label>Управление группами: </label>
+                    <select v-model="selectedGroup">
+                        <option :value="{}" disabled hidden>
+                            Выберите группу
+                        </option>
+                        <option v-for="group in selectedSector.Childrens" :key="group" :value="group">
+                            {{group.Name}}
+                        </option>
+                    </select>
+
+                    <a href='#' @click="this.$emit('delete',selectedGroup)">Удалить</a>
+                </div>                            
+
+                <div class="form-group">
                     <button type="button" @click="sendData" >Сохранить</button>
                     <a href='#' @click="this.$emit('closeEdit')">Назад</a>
                 </div>
@@ -23,6 +51,14 @@
 export default 
     {
         props: {department:Object},
+
+        data(){
+            return{
+                selectedSector:{},
+                selectedGroup:{}
+            }
+        },
+
         methods:
         {
             async sendData()

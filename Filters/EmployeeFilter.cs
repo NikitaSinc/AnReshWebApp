@@ -8,10 +8,10 @@ namespace AnReshWebApp.Filters
 {
     public class EmployeeFilter
     {
-        public Employee employee = new Employee();
-        public string empoloyeeRow;
+        public EmployeeFilterModel employee = new EmployeeFilterModel();
+        public string SQLRow="";
 
-        public void SetFilter(Employee employee)
+        public void SetFilter(EmployeeFilterModel employee)
         {
             this.employee = employee;
             GenerateSQLString();
@@ -22,13 +22,17 @@ namespace AnReshWebApp.Filters
             string where = " WHERE";
             if (employee.Full_name != null)
             {
-                empoloyeeRow += where+ " CHARINDEX(@Full_name, Full_name)>0";
+                SQLRow += where + " Full_name like '%'+@Full_name+'%'";
                 where = " AND";
             }
-            if (employee.Id_department != 0)
+            if (employee.Departments != null)
             {
-                empoloyeeRow += where + " Id_department = @Id_department";
+                SQLRow += where + " Id_department in @Departments";
                 where = " AND";
+            }
+            if (employee.Skills != null)
+            {
+                SQLRow += where + " Id in (SELECT id_employee FROM EmployeeSkills WHERE Id_skills in @Skills)";
             }
         }
     }
