@@ -6,20 +6,26 @@ using System.Web;
 using System.Web.Mvc;
 using AnReshWebApp.Models;
 using AnReshWebApp.Filters;
+using AnReshWebApp.Repositories;
+using AnReshWebApp.Models.FilterEntity;
 
 namespace AnReshWebApp.Controllers
 {
-
+    
     public class DepartmentController : Controller
     {
+        public GenericRepository<DepartmentFilterModel, Department> Repository;
+       
 
-        public DepartmentRepository repository = new DepartmentRepository();
-        public DepartmentFilter filter = new DepartmentFilter();
-
-        public async Task<JsonResult> SendData(Department department)
+        public DepartmentController(GenericRepository<DepartmentFilterModel, Department> departmentRepository)
         {
-            filter.SetFilter(department);
-            var departmentsList = await repository.GetAllAsyncFiltered(filter);
+            Repository = departmentRepository;
+        }
+
+        public async Task<JsonResult> SendData(DepartmentFilterModel department)
+        {
+            Repository.Filter = new DepartmentFilter(department);
+            var departmentsList = await Repository.GetAllAsyncFiltred();
             return Json(departmentsList, JsonRequestBehavior.AllowGet);
         }
 
@@ -32,7 +38,7 @@ namespace AnReshWebApp.Controllers
         {
             try
             {
-                await repository.DeleteAsync(id);
+                await Repository.DeleteAsync(id);
             }
             catch (Exception exeption)
             {
@@ -47,7 +53,7 @@ namespace AnReshWebApp.Controllers
         {
             try
             {
-                await repository.UpdateAsync(department);
+                await Repository.UpdateAsync(department);
             }
             catch (Exception exeption)
             {
@@ -64,7 +70,7 @@ namespace AnReshWebApp.Controllers
             int id;
             try
             {
-                id = await repository.AddAsync(department);
+                id = await Repository.AddAsync(department);
             }
             catch (Exception exeption)
             {

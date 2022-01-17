@@ -14,7 +14,7 @@ namespace AnReshWebApp.JWT
 {
     public class JsonWebTokenService
     {
-		private readonly SymmetricSecurityKey mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(AppConfiguration.JWTSecretkey));
+		private readonly SymmetricSecurityKey mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JWTConfiguration.JWTSecretkey));
 
 		public string GenerateToken(int id, string userLogin)
 		{
@@ -27,9 +27,9 @@ namespace AnReshWebApp.JWT
 					new Claim(ClaimTypes.Name, userLogin)
 
 				}),
-				Expires = DateTime.UtcNow.AddMinutes(AppConfiguration.JWTTimeout),
-				Issuer = AppConfiguration.HostURL,
-				Audience = AppConfiguration.ClientURL,
+				Expires = DateTime.UtcNow.AddMinutes(JWTConfiguration.JWTTimeout),
+				Issuer = JWTConfiguration.HostURL,
+				Audience = JWTConfiguration.ClientURL,
 				SigningCredentials = new SigningCredentials(mySecurityKey, SecurityAlgorithms.HmacSha256Signature)
 			};
 
@@ -59,8 +59,8 @@ namespace AnReshWebApp.JWT
 				ValidateLifetime = true, 
 				ValidateAudience = true,
 				ValidateIssuer = true,  
-				ValidIssuer = AppConfiguration.HostURL,
-				ValidAudience = AppConfiguration.ClientURL,
+				ValidIssuer = JWTConfiguration.HostURL,
+				ValidAudience = JWTConfiguration.ClientURL,
 				IssuerSigningKey = mySecurityKey
 			};
 		}

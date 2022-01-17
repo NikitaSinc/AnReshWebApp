@@ -3,25 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AnReshWebApp.Models;
+using AnReshWebApp.Models.FilterEntity;
 
 namespace AnReshWebApp.Filters
 {
-    public class DepartmentFilter
+    public class DepartmentFilter : IFilter<DepartmentFilterModel>
     {
-        public Department department = new Department();
-        public string departmentRow;
+        public  DepartmentFilterModel Model { get; set; }
+        public string Row { get; set; }
 
-        public void SetFilter(Department department)
+        public DepartmentFilter(DepartmentFilterModel department)
         {
-            this.department = department;
+            Model = department;
             GenerateSQLString();
         }
 
         private void GenerateSQLString()
         {
-            if (department.Name != null)
+            if (Model.Name != null)
             {
-                departmentRow = " and Name like '%'+@Name+'%'";
+                if (DataBaseConfiguration.ChosenSQLConnection == DataBaseConfiguration.MSSQLConnection)
+                {
+                    Row = " and Name like '%'+@Name+'%'";
+                }
+                else if(DataBaseConfiguration.ChosenSQLConnection == DataBaseConfiguration.MySQLConnection)
+                {
+                    Row = " and Name like CONCAT('%', @Name, '%')";
+                }   
             }
         }
     }

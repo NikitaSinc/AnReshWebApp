@@ -6,23 +6,32 @@ using System.Threading.Tasks;
 using System.Web;
 using AnReshWebApp.Filters;
 using System.Web.Mvc;
+using AnReshWebApp.Services;
+using AnReshWebApp.Models.FilterEntity;
+using AnReshWebApp.Repositories;
 
 namespace AnReshWebApp.Controllers
 {
     public class EmployeeController : Controller
     {
-        public EmployeeRepository employeeRepository = new EmployeeRepository();
-        public DepartmentRepository departmentRepository = new DepartmentRepository();
-        public Paginator paginator = new Paginator();
-        public EmployeeFilter filter = new EmployeeFilter();
+        public GenericRepository<EmployeeFilterModel,Employee> EmployeeRepository;
+        public GenericRepository<DepartmentFilterModel, Department> DepartmentRepository;
+
+        public EmployeeController(GenericRepository<EmployeeFilterModel, Employee> employeeRepository, GenericRepository<DepartmentFilterModel, Department> departmentRepository)
+        {
+            EmployeeRepository = employeeRepository;
+            DepartmentRepository = departmentRepository;
+        }
 
         [HttpPost]
         public async Task<JsonResult> SendData(EmployeeFilterModel employeeFilterModel, int currentPage = 1, int rowPerPage = 10)
         {
-            paginator.SetPageSize(currentPage, rowPerPage);
-            filter.SetFilter(employeeFilterModel);
-            var employeeList = await employeeRepository.GetAllAsyncFiltered(filter, paginator);
-            return Json(new { employeeList , paginator}, JsonRequestBehavior.AllowGet) ;
+            EmployeeRepository.Filter = new EmployeeFilter(employeeFilterModel);
+            EmployeeRepository.Paginator = new Paginator();
+            EmployeeRepository.Paginator.SetPageSize(currentPage, rowPerPage);
+
+            var employeeList = await EmployeeRepository.GetAllAsyncFiltred();
+            return Json(new { employeeList , EmployeeRepository.Paginator}, JsonRequestBehavior.AllowGet) ;
         }
 
         public ActionResult EmployeeForm()
@@ -33,7 +42,7 @@ namespace AnReshWebApp.Controllers
         {
             try
             {
-                await employeeRepository.DeleteAsync(id);
+                await EmployeeRepository.DeleteAsync(id);
             }
             catch (Exception exeption)
             {
@@ -48,7 +57,7 @@ namespace AnReshWebApp.Controllers
         {
             try
             {
-                await employeeRepository.UpdateAsync(employee);
+                await EmployeeRepository.UpdateAsync(employee);
             }
             catch (Exception exeption)
             {
@@ -64,7 +73,7 @@ namespace AnReshWebApp.Controllers
             int id;
             try
             {
-               id = await employeeRepository.AddAsync(employee);
+               id = await EmployeeRepository.AddAsync(employee);
             }
             catch (Exception exeption)
             {

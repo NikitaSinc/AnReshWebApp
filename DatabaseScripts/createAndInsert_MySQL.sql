@@ -1,8 +1,7 @@
-use master;
 drop database if exists AnReshProbation;
 create database  AnReshProbation;
 
-use AnReshProbation
+use AnReshProbation;
 drop table if exists EmployeeSkills;
 drop table if exists Users;
 drop table if exists Employee;
@@ -10,7 +9,7 @@ drop table if exists Department;
 drop table if exists Skills;
 
 create table Department (
-	Id int not null identity(1,1) primary key,
+	Id int not null auto_increment primary key,
 	Pid int not null,
 	Name varchar(100) not null);
 
@@ -65,10 +64,11 @@ values
 	(20,'Группа 2');
 	
 create table Employee (
-	Id int not null identity(1,1) primary key,
+	Id int not null auto_increment primary key,
 	Full_name varchar(250) not null,
-	Id_department int not null foreign key references Department(Id) on delete cascade,
-	Salary int not null default 12392);
+	Id_department int not null ,
+	Salary int not null default 12392,
+    foreign key (Id_department) references Department(Id) on delete cascade);
     
 INSERT INTO Employee (Full_name,Id_department,Salary)
 VALUES
@@ -192,7 +192,7 @@ VALUES
   ('Orli M. Holloway',26,19311);
 
 create table Skills (
-	Id int not null identity(1,1) primary key,
+	Id int not null auto_increment primary key,
 	Skill_name varchar(250) not null unique);
 
 INSERT Skills (Skill_name)
@@ -202,8 +202,10 @@ INSERT Skills (Skill_name)
 	('SQL');
 
 create table EmployeeSkills (
-	Id_employee int not null foreign key references Employee(Id) on delete cascade,
-	Id_skills int not null foreign key references Skills(Id) on delete cascade);
+	Id_employee int not null,
+	Id_skills int not null,
+    foreign key (Id_employee) references Employee(Id) on delete cascade,
+    foreign key (Id_skills) references Skills(Id) on delete cascade);
 
 INSERT EmployeeSkills (Id_employee, Id_skills)
 	VALUES
@@ -269,7 +271,7 @@ INSERT EmployeeSkills (Id_employee, Id_skills)
 	(40, 1);
 
  create table Users (
-	Id int not null identity(1,1) primary key,
+	Id int not null auto_increment primary key,
 	Login varchar(50) not null unique,
 	Password varchar(50) not null);
 

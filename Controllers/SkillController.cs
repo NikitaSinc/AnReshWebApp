@@ -1,4 +1,6 @@
 ﻿using AnReshWebApp.Models;
+using AnReshWebApp.Models.FilterEntity;
+using AnReshWebApp.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +12,16 @@ namespace AnReshWebApp.Controllers
 {
     public class SkillController : Controller
     {
-        public SkillsRepository repository = new SkillsRepository();
+        public GenericRepository<BaseFilterEntity, Skills> Repository;
+
+        public SkillController(GenericRepository<BaseFilterEntity, Skills> repository)
+        {
+            Repository = repository;
+        }
+
         public async Task<JsonResult> SendData()
         {
-            var skillsList = await repository.GetAllAsync();
+            var skillsList = await Repository.GetAllAsync();
 
             return Json(skillsList, JsonRequestBehavior.AllowGet);
         }
@@ -27,7 +35,7 @@ namespace AnReshWebApp.Controllers
         {
             try
             {
-                await repository.DeleteAsync(id);
+                await Repository.DeleteAsync(id);
             }
             catch (Exception exeption)
             {
@@ -42,7 +50,7 @@ namespace AnReshWebApp.Controllers
         {
             try
             {
-                await repository.UpdateAsync(skill);
+                await Repository.UpdateAsync(skill);
             }
             catch (Exception exeption)
             {
@@ -59,7 +67,7 @@ namespace AnReshWebApp.Controllers
             int id;
             try
             {
-               id = await repository.AddAsync(skill);
+               id = await Repository.AddAsync(skill);
             }
             catch (Exception exeption)
             {

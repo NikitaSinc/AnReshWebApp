@@ -265,7 +265,7 @@ export default
             const serverData = await response.json() 
             console.log(serverData)
             this.employeeList = serverData.employeeList;
-            this.paginator = serverData.paginator;
+            this.paginator = serverData.Paginator;
             this.setPages();
         },
 

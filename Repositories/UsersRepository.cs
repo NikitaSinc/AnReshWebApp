@@ -1,4 +1,6 @@
-﻿using AnReshWebApp.Services;
+﻿using AnReshWebApp.Models.FilterEntity;
+using AnReshWebApp.Repositories;
+using AnReshWebApp.Services;
 using Dapper;
 using MySql.Data.MySqlClient;
 using System;
@@ -11,41 +13,27 @@ using System.Web;
 
 namespace AnReshWebApp.Models
 {
-    public interface IUsersRepository : IRepository<Users>
+    public class UsersRepository : GenericRepository<BaseFilterEntity, Users>
     {
-
-    }
-    public class UsersRepository : IUsersRepository
-    {
-        public async Task<Users> LoginAsync(Users entity)
+        public UsersRepository(string tableName, AbstractDBFactory dBFactory, ISQLCommands commands) : base(tableName, dBFactory, commands)
         {
-            using (var db = DBConnectionFactory.CreateConnection())
+            TableName = AppConfiguration.UserTableName;
+            DBFactory = dBFactory;
+            Commands = commands;
+        }
+
+        public async override Task<Users> LoginAsync(Users entity)
+        {
+            using (var db = DBFactory.CreateConnection())
             {
                 var result = await db.QueryAsync<Users>("SELECT * FROM Users WHERE Login=@login and Password= @password", entity);
                 return result.FirstOrDefault();
             }
         }
-        public async Task<Users> GetByIdAsync(int id)
-        {
-            using (var db = DBConnectionFactory.CreateConnection())
-            {
-                var result = await db.QueryAsync<Users>("SELECT * FROM Users WHERE Id=@id", new { id });
-                return result.FirstOrDefault();
-            }
-        }
 
-        public async Task<IReadOnlyList<Users>> GetAllAsync()
+        public async override Task<int> AddAsync(Users entity)
         {
-            using (var db = DBConnectionFactory.CreateConnection())
-            {
-                var result = await db.QueryAsync<Users>("SELECT * FROM Users");
-                return result.ToList();
-            }
-        }
-
-        public async Task<int> AddAsync(Users entity)
-        {
-            using (var db = DBConnectionFactory.CreateConnection())
+            using (var db = DBFactory.CreateConnection())
             {
                 var result = await db.ExecuteAsync("INSERT INTO Users (Login, Password) VALUES(@Login, @Password)", entity);
                 return result;
@@ -53,22 +41,12 @@ namespace AnReshWebApp.Models
 
         }
 
-        public async Task<int> UpdateAsync(Users entity)
+        public async override Task<int> UpdateAsync(Users entity)
         {
-            using (var db = DBConnectionFactory.CreateConnection())
+            using (var db = DBFactory.CreateConnection())
             {
                 var sqlQuery = "UPDATE Users SET Login = @Login, Password = @Password WHERE Id = @Id";
                 var result = await db.ExecuteAsync(sqlQuery, entity);
-                return result;
-            }
-        }
-
-        public async Task<int> DeleteAsync(int id)
-        {
-            using (var db = DBConnectionFactory.CreateConnection())
-            {
-                var sqlQuery = "DELETE FROM Users WHERE Id = @id";
-                var result = await db.ExecuteAsync(sqlQuery, new { id });
                 return result;
             }
         }

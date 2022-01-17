@@ -227,6 +227,18 @@
     <Reference Include="MySql.Data, Version=8.0.26.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>packages\MySql.Data.8.0.26\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject, Version=3.3.3.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.3.3.3\lib\net45\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Common, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.Web.Common.3.3.0\lib\net45\Ninject.Web.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Common.WebHost, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.Web.Common.WebHost.3.3.0\lib\net45\Ninject.Web.Common.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Mvc, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.MVC5.3.3.0\lib\net45\Ninject.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -381,16 +393,20 @@
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\DepartmentFilter.cs" />
     <Compile Include="Filters\EmployeeFilter.cs" />
+    <Compile Include="Filters\IFilter.cs" />
     <Compile Include="Filters\Paginator.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="JWT\JsonWebTokenService.cs" />
     <Compile Include="Models\BaseEntity.cs" />
-    <Compile Include="Models\EmployeeFilterModel.cs" />
+    <Compile Include="Models\FilterEntity\EmployeeFilterModel.cs" />
     <Compile Include="Models\EmployeeSkills.cs" />
+    <Compile Include="Models\FilterEntity\BaseFilterEntity.cs" />
+    <Compile Include="Models\FilterEntity\DepartmentFilterModel.cs" />
     <Compile Include="Models\Skills.cs" />
     <Compile Include="Models\Users.cs" />
+    <Compile Include="Repositories\GenericRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Repositories\DepartmentRepository.cs" />
     <Compile Include="Models\Employee.cs" />
@@ -400,7 +416,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\SkillsRepository.cs" />
     <Compile Include="Repositories\UsersRepository.cs" />
-    <Compile Include="Services\DBConnectionFactory.cs" />
+    <Compile Include="Services\DataBaseConnection.cs" />
+    <Compile Include="Util\NinjectRegistrations.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\JonSunhHamburgers.css" />

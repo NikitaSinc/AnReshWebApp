@@ -3,36 +3,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AnReshWebApp.Models;
+using AnReshWebApp.Models.FilterEntity;
 
 namespace AnReshWebApp.Filters
 {
-    public class EmployeeFilter
+    public class EmployeeFilter : IFilter<EmployeeFilterModel>
     {
-        public EmployeeFilterModel employee = new EmployeeFilterModel();
-        public string SQLRow="";
+        public EmployeeFilterModel Model { get; set; }
+        public string Row { get; set; }
 
-        public void SetFilter(EmployeeFilterModel employee)
+        public EmployeeFilter(EmployeeFilterModel employee)
         {
-            this.employee = employee;
+            Model = employee;
+            Row = "";
             GenerateSQLString();
         }
 
         private void GenerateSQLString()
         {
             string where = " WHERE";
-            if (employee.Full_name != null)
+            if (Model.Full_name != null)
             {
-                SQLRow += where + " Full_name like '%'+@Full_name+'%'";
+                if (DataBaseConfiguration.ChosenSQLConnection == DataBaseConfiguration.MSSQLConnection)
+                {
+                    Row += where + " Full_name like '%'+@Full_name+'%'";
+                }
+                else if (DataBaseConfiguration.ChosenSQLConnection == DataBaseConfiguration.MySQLConnection)
+                {
+                    Row += where + " Full_name like CONCAT('%', @Full_name, '%')";
+                }
                 where = " AND";
             }
-            if (employee.Departments != null)
+            if (Model.Departments != null)
             {
-                SQLRow += where + " Id_department in @Departments";
+                Row += where + " Id_department in @Departments";
                 where = " AND";
             }
-            if (employee.Skills != null)
+            if (Model.Skills != null)
             {
-                SQLRow += where + " Id in (SELECT id_employee FROM EmployeeSkills WHERE Id_skills in @Skills)";
+                Row += where + " Id in (SELECT id_employee FROM EmployeeSkills WHERE Id_skills in @Skills)";
             }
         }
     }

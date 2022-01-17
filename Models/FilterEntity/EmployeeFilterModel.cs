@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace AnReshWebApp.Models
+namespace AnReshWebApp.Models.FilterEntity
 {
-    public class EmployeeFilterModel : BaseEntity
+    public class EmployeeFilterModel : BaseFilterEntity
     {
         public string Full_name { get; set; }
         public int Salary { get; set; }
