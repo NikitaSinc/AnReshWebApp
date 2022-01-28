@@ -43,58 +43,64 @@
     </div>
 </template>
 
-<script>
-export default 
-    {
-        props: {departmentList:Array},
+<script lang= "ts">
 
-        data(){
-            return{
-                selectedDepartment:{},
-                selectedSector:{},
-                department:{},
-            }
-        },
+import store from "@/store"
+import { defineComponent, PropType } from "@vue/runtime-core"
+import { Department} from "@/components/Department/types"
 
-        methods:
-        {
-            async sendData()
-            {
-                if(JSON.stringify(this.selectedSector) !== '{}')
-                {
-                    this.department.Pid = this.selectedSector.Id
-                }
-                else
-                {
-                    if (JSON.stringify(this.selectedDepartment) !== '{}')
-                    {
-                        this.department.Pid = this.selectedDepartment.Id
-                    }
-                    else 
-                    {
-                        this.department.Pid = 0
-                    }
-                }
-                const requestOptions = {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ department: this.department })
-                };
-                const response = await fetch(this.$store.state.backendPath +"Department/Create", requestOptions)
-                if (response.status === 200)
-                {
-                    this.department.Id = await response.json()
-                    this.$emit('closeCreate')
-                }
-                else
-                {
-                    this.$store.commit('setMessage', await response.json())
-                }
-            }
-        },
-        beforeMount()
-        {
-            this.$store.dispatch('user/checkValidation', '/Department/DepartmentForm')
+export default defineComponent
+({   
+    props:{departmentList:{type:Array as PropType<Array<Department>>, required: true}},
+
+    data(){
+        return{
+            selectedDepartment:{} as Department,
+            selectedSector:{} as Department,
+            department:{} as Department,
         }
+    },
+
+    methods:
+    {
+        async sendData(): Promise<void>
+        {
+            if(JSON.stringify(this.selectedSector) !== '{}')
+            {
+                this.department.Pid = this.selectedSector.Id
+            }
+            else
+            {
+                if (JSON.stringify(this.selectedDepartment) !== '{}')
+                {
+                    this.department.Pid = this.selectedDepartment.Id
+                }
+                else 
+                {
+                    
+                    this.department.Pid = 0
+                }
+            }
+            const requestOptions = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ department: this.department })
+            };
+            const response = await fetch(store.state.backendPath +"Department/Create", requestOptions)
+            if (response.status === 200)
+            {
+                this.department.Id = await response.json()
+                this.$emit('closeCreate')
+            }
+            else
+            {
+                this.$store.commit('setMessage', await response.json())
+            }
+        }
+    },
+    beforeMount()
+    {
+        this.$store.dispatch('checkValidation', '/Department/DepartmentForm')
     }
+})
 </script>

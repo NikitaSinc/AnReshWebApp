@@ -7,24 +7,28 @@
     <burger-menu v-if="burgerActive" v-bind:mobileSize = mobileSize />
 </template>
 
-<script>
-    import BurgerMenu from '@/components/Navigation/BurgerMenu'
+<script lang="ts">
+import BurgerMenu from '@/components/Navigation/BurgerMenu.vue'
+import { defineComponent, PropType } from '@vue/runtime-core'
 
-    export default {
-        props:{
-            mobileSize:Boolean
-        },
+export default defineComponent
+({
+    props:
+    {
+        mobileSize:{type: Boolean as PropType<boolean>, required:true}
+    },
 
-        components:{
-            BurgerMenu
-        },
+    components:
+    {
+        BurgerMenu
+    },
 
-        data() {
-            return {
-                burgerActive:false 
-            }
-        },
-    }
+    data() {
+        return {
+            burgerActive:false as boolean
+        }
+    },
+})
 </script>
 
 <style lang="css">
@@ -40,6 +44,4 @@
         background-color:#131524;
         z-index: 100;
     }
-
-
 </style>

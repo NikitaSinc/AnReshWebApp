@@ -19,35 +19,38 @@
     </div>
 </template>
 
-<script>
-export default 
-    {
-        props:{skill: Object},
+<script lang="ts">
+import { defineComponent, PropType } from "@vue/runtime-core";
+import { Skills } from "./types";
 
-        methods:
+export default defineComponent
+({
+    props:{skill:{type: Object as PropType<Skills>, required: true}},
+
+    methods:
+    {
+        async sendData(): Promise<void>
         {
-            async sendData()
+            const requestOptions = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ skill: this.skill })
+            };
+            const response = await fetch(this.$store.state.backendPath +"Skill/Create", requestOptions)
+            if (response.status === 200)
             {
-                const requestOptions = {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ skill: this.skill })
-                };
-                const response = await fetch(this.$store.state.backendPath +"Skill/Create", requestOptions)
-                if (response.status === 200)
-                {
-                    this.skill.Id = await response.json()
-                    this.$emit('closeCreate')
-                }
-                else
-                {
-                    this.$store.commit('setMessage', await response.json())
-                }
+                this.skill.Id = await response.json()
+                this.$emit('closeCreate')
             }
-        },
-        beforeMount()
-        {
-            this.$store.dispatch('user/checkValidation', '/Skill/DepartmentForm')
+            else
+            {
+                this.$store.commit('setMessage', await response.json())
+            }
         }
+    },
+    beforeMount()
+    {
+        this.$store.dispatch('user/checkValidation', '/Skill/DepartmentForm')
     }
+})
 </script>

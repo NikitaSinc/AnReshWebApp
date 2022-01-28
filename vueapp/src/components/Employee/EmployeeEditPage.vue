@@ -56,92 +56,99 @@
         </div>
     </div> 
 </template>
-<script>
-    export default 
+
+<script lang="ts">
+
+import { defineComponent, PropType } from '@vue/runtime-core';
+import { Employee } from './types';
+import { Department } from '../Department/types';
+import { Skills } from '../Skill/types';
+
+export default defineComponent
+({
+    props: 
     {
-        props: 
-        {
-            employee:Object
-        },
+        employee:{type: Object as PropType<Employee>, required: true}
+    },
 
-        data(){
-            return{
-                selectedDepartment:{},
-                selectedSector:{},
-                selectedGroup:{},
-                department:{},
-                departmentList:[],
-                skill:{},
-                skillList:[{}],
-                index:Number
-            }
-        },
+    data(){
+        return{
+            selectedDepartment:{} as Department,
+            selectedSector:{} as Department,
+            selectedGroup:{} as Department,
+            department:{} as Department,
+            departmentList:[] as Array<Department>,
+            skill:{} as Skills,
+            skillList:[] as Array<Skills>,
+            index:0 as number
+        }
+    },
 
-        methods:
+    methods:
+    {
+        findGroup(): void
         {
-            findGroup()
+            for (var i = 0; i<this.departmentList.length; i++)
             {
-                for (var i = 0; i<this.departmentList.length; i++)
+                for (var y = 0; y<this.departmentList[i].Childrens.length; y++)
                 {
-                    for (var y = 0; y<this.departmentList[i].Childrens.length; y++)
+                    for (var z = 0; z<this.departmentList[i].Childrens[y].Childrens.length; z++)
                     {
-                        for (var z = 0; z<this.departmentList[i].Childrens[y].Childrens.length; z++)
+                        if (this.departmentList[i].Childrens[y].Childrens[z].Id === this.employee.Id_department)
                         {
-                            if (this.departmentList[i].Childrens[y].Childrens[z].Id === this.employee.Id_department)
-                            {
-                                this.selectedGroup = this.departmentList[i].Childrens[y].Childrens[z];
-                                this.selectedSector = this.departmentList[i].Childrens[y];
-                                this.selectedDepartment = this.departmentList[i];
-                            }
+                            this.selectedGroup = this.departmentList[i].Childrens[y].Childrens[z];
+                            this.selectedSector = this.departmentList[i].Childrens[y];
+                            this.selectedDepartment = this.departmentList[i];
                         }
                     }
                 }
-            },
-
-            async loadDepartmentData()
-            {
-                const response = await fetch(this.$store.state.backendPath +"Department/SendData")
-                const serverData = await response.json() 
-                this.departmentList = serverData;
-                this.findGroup();
-            },
-
-            async getSkills()
-            {
-                const response = await fetch(this.$store.state.backendPath +"Skill/SendData")
-                const serverData = await response.json() 
-                this.skillList = serverData;
-            },
-
-            async sendData()
-            {
-                const requestOptions = {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({employee: this.employee})
-                };
-                const response = await fetch(this.$store.state.backendPath +"Employee/Edit", requestOptions)
-                if (response.status === 200)
-                {
-                    this.$emit('closeEdit')
-                }
-                else
-                {
-                    this.$store.commit('setMessage', await response.json())
-                }
-            },
+            }
         },
 
-        beforeMount()
-        { 
-            this.getSkills();
-            this.loadDepartmentData();  
-            
+        async loadDepartmentData(): Promise<void>
+        {
+            const response = await fetch(this.$store.state.backendPath +"Department/SendData")
+            const serverData = await response.json() 
+            this.departmentList = serverData;
+            this.findGroup();
         },
-        mounted()
-        { 
-            this.$store.dispatch('user/checkValidation', '/Employee/EmployeeForm');    
-        }
+
+        async getSkills(): Promise<void>
+        {
+            const response = await fetch(this.$store.state.backendPath +"Skill/SendData")
+            const serverData = await response.json() 
+            this.skillList = serverData;
+        },
+
+        async sendData(): Promise<void>
+        {
+            const requestOptions = {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({employee: this.employee})
+            };
+            const response = await fetch(this.$store.state.backendPath +"Employee/Edit", requestOptions)
+            if (response.status === 200)
+            {
+                this.$emit('closeEdit')
+            }
+            else
+            {
+                this.$store.commit('setMessage', await response.json())
+            }
+        },
+    },
+
+    beforeMount()
+    { 
+        this.getSkills();
+        this.loadDepartmentData();  
+        
+    },
+    mounted()
+    { 
+        this.$store.dispatch('checkValidation', '/Employee/EmployeeForm');    
     }
+})
 </script>
 

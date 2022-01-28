@@ -1,3 +1,4 @@
+
 <template>
     <h1>Отделы</h1>
     <h3 style="warning" v-if="this.$store.state.messageVariable !== null">{{this.$store.state.messageVariable}}</h3>
@@ -83,80 +84,81 @@
     </table>
 </template>
 
-<script>
-    import DepartmentCreationPage from '@/components/Department/DepartmentCreationPage.vue'
-    import DepartmentEditPage from '@/components/Department/DepartmentEditPage.vue'
-    
+<script lang="ts">
 
-    export default  
+import DepartmentCreationPage from '@/components/Department/DepartmentCreationPage.vue'
+import DepartmentEditPage from '@/components/Department/DepartmentEditPage.vue'
+import { defineComponent } from '@vue/runtime-core'
+import { Department } from "@/components/Department/types"
+
+export default defineComponent
+({
+    components: { DepartmentCreationPage, DepartmentEditPage },
+
+    data(){
+        return {
+            filter:{} as Department,
+            showEdit: false,
+            showCreate: false,
+            department:{} as Department,
+            departmentList:[] as Array<Department>
+        }
+    },
+
+    methods: 
     {
-        components: { DepartmentCreationPage, DepartmentEditPage },
-
-        data()
+        closeCreate() : void
         {
-            return {
-                filter:{},
-                showEdit: false,
-                showCreate: false,
-                department:{},
-                departmentList:[]
-            }
-        },
-
-        methods: 
-        {
-            closeCreate()
-            {
-                this.showCreate = false
-                this.loadData()
-            },
-
-            closeEdit()
-            {
-                this.showEdit = false
-                this.loadData()
-            },
-
-            async loadData()
-            {
-                const requestOptions = {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({department: this.filter})
-                        };
-                const response = await fetch(this.$store.state.backendPath +"Department/SendData", requestOptions)
-                const serverData = await response.json() 
-                this.departmentList = serverData;
-            },
-    
-            async deleteDepartment(department)
-            {
-                this.$store.dispatch('user/checkValidation', '/Department/DepartmentForm');
-                if (this.$store.state.user.logged === true)
-                {
-                    const requestOptions = {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({id: department.Id})
-                    };
-                    const response = await fetch(this.$store.state.backendPath +"Department/Delete", requestOptions)
-                
-                    if (response.status === 200)
-                    {
-                        this.loadData()
-                    }
-                    else
-                    {
-                        this.$store.commit('setMessage', await response.json())
-                    }
-                }
-                this.showEdit = false
-            },
-        },
-        mounted()
-        {
+            this.showCreate = false
             this.loadData()
         },
 
-    }
+        closeEdit() : void
+        {
+            this.showEdit = false
+            this.loadData()
+        },
+
+        async loadData() : Promise<void>
+        {
+            const requestOptions = {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({department: this.filter})
+                    };
+            const response = await fetch(this.$store.state.backendPath +"Department/SendData", requestOptions)
+            const serverData = await response.json() 
+            this.departmentList = serverData;
+        },
+
+        async deleteDepartment(department: Department): Promise<void>
+        { 
+            this.$store.dispatch('checkValidation', '/Department/DepartmentForm');
+            if (this.$store.state.logged === true)
+            {
+                const requestOptions = {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({id: department.Id})
+                };
+                const response = await fetch(this.$store.state.backendPath +"Department/Delete", requestOptions)
+            
+                if (response.status === 200)
+                {
+                    this.loadData()
+                }
+                else
+                {
+                    this.$store.commit('setMessage', await response.json())
+                }
+            }
+            this.showEdit = false
+        },
+    },
+    mounted()
+    {
+        this.loadData()
+    },
+
+})
 </script>

@@ -8,7 +8,7 @@ using System.Data.Common;
 
 namespace AnReshWebApp.Services
 {
-    public interface AbstractDBFactory
+    public interface AbstractDBFactory // не фабрика
     {
        System.Data.IDbConnection CreateConnection();
     }

@@ -22,7 +22,7 @@ namespace AnReshWebApp.Models
             Commands = commands;
         }
 
-        public async override Task<IReadOnlyList<Department>> GetAllAsyncFiltred() 
+        public async override Task<IReadOnlyList<Department>> GetAllAsyncFiltred() //рекурсию
         {
             using (var db = DBFactory.CreateConnection())
             {

@@ -1,16 +1,18 @@
 <template>
-    <div v-if="this.$store.state.user.logged === false">
+    <div v-if="this.$store.state.logged === false">
         <login-form></login-form>   
     </div>
     <div v-else>
         <user-profile></user-profile>   
     </div>
 </template>
-<script>
+<script lang = "ts">
 import LoginForm from '@/components/User/LoginForm.vue'
 import UserProfile from '@/components/User/UserProfile.vue'
+import { defineComponent } from '@vue/runtime-core'
 
-export default {
+
+export default defineComponent({
     components: { LoginForm, UserProfile }
-}
+})
 </script>  

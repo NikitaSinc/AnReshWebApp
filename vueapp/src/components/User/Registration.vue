@@ -1,7 +1,7 @@
 <template>
     <form>
         <h1>Регистрация</h1>
-        <h3 style="warning" v-if="this.$store.state.messageVariable">{{this.$store.state.messageVariable}}</h3>
+        <h3 style="warning" v-if="$store.state.messageVariable">{{$store.state.messageVariable}}</h3>
         <div class="form-group">
             <label >Логин: </label>
             <input v-model="user.login" required >
@@ -13,15 +13,23 @@
         <button type="button" @click="registrate">Зарегестрироваться</button>
     </form>
 </template>
-<script>
-export default{
-    data(){
+<script lang = "ts">
+import store from "@/store"
+import { defineComponent } from "@vue/runtime-core"
+import { User } from "./types"
+
+export default defineComponent({
+    data()
+    {
         return{
-            user:{login:'', password:''}
+            store,
+            user:{login:'', password:''} as User
         }
     },
-    methods:{
-        async registrate(){
+    methods:
+    {
+        async registrate(): Promise<void>
+        {
             const requestOptions = {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -35,5 +43,5 @@ export default{
             else if(response.status === 401){this.$store.commit('setMessage', 'Пользователь с таким логином уже существует')}
         }
     },
-}
+})
 </script>

@@ -4,13 +4,13 @@
     <header class="header">
         <div class="nav__top">
             <div class="nav__top__user ">
-                <p v-if="this.$store.state.user.logged === false">
+                <p v-if="this.$store.state.logged === false">
                     <img src="@/components/images/login__pic.png" alt="login" class="login__pic" />
                     <router-link to="/User/Login">Войти</router-link>   |   <router-link to="/User/Registration">Зарегистрироваться</router-link>
                 </p>
                 <p v-else>
                     <img src="@/components/images/login__pic.png" alt="login" class="login__pic" />
-                    <router-link to="/User/Login">Текущий пользователь: {{this.$cookies.get('Login')}}</router-link>
+                    <router-link to="/User/Login">Текущий пользователь: {{VueCookieNext.getCookie('Login')}}</router-link>
                 </p>
             </div>
         </div>
@@ -28,12 +28,14 @@
     </div>
 </template>
 
-<script>
+<script lang = "ts">
     import Burger from '@/components/Navigation/Burger.vue'
     import BurgerMenu from '@/components/Navigation/BurgerMenu.vue'
+    import { defineComponent } from '@vue/runtime-core'
+    import {VueCookieNext} from 'vue-cookie-next'
+    import store from '@/store'
 
-    export default
-    {
+    export default defineComponent({
         components: 
         {
             Burger,
@@ -43,13 +45,15 @@
         data()
         {
             return{
+                store,
+                VueCookieNext,
                 mobileSize: false
             }
         },
 
         methods:
         {
-            width(){
+            width(): void {
                 if (window.innerWidth < 1200) 
                 {
                     this.mobileSize = true
@@ -66,7 +70,7 @@
             this.width()
             window.addEventListener('resize', this.width);
         },
-    }
+    })
 </script>
 
 <style>

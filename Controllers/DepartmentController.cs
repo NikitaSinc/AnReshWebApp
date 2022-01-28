@@ -14,7 +14,7 @@ namespace AnReshWebApp.Controllers
     
     public class DepartmentController : Controller
     {
-        public GenericRepository<DepartmentFilterModel, Department> Repository;
+        private GenericRepository<DepartmentFilterModel, Department> Repository;
        
 
         public DepartmentController(GenericRepository<DepartmentFilterModel, Department> departmentRepository)

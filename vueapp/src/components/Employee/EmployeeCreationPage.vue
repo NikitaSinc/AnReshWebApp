@@ -58,73 +58,81 @@
         </div>  
     </div>
 </template>
-<script>
-    export default 
-    {
-        props:{employee:Object},
-        data()
-        {
-            return {
-                selectedDepartment:{},
-                selectedSector:{},
-                selectedGroup:{},
-                department:{},
-                departmentList:[],
-                skill:{},
-                skillList:[],
-                index:Number
-            }
-        },
-        methods:{
-            async loadDepartmentData()
-            {
-                const response = await fetch(this.$store.state.backendPath +"Department/SendData")
-                const serverData = await response.json() 
-                this.departmentList = serverData;
-                this.department = null;
-            },
-            
-            async getSkills()
-            {
-                const response = await fetch(this.$store.state.backendPath +"Skill/SendData")
-                const serverData = await response.json() 
-                this.skillList = serverData;
-            },
 
-            async sendData()
+<script lang = "ts">
+
+import { defineComponent, PropType } from "@vue/runtime-core"
+import { Department } from "../Department/types"
+import { Skills } from "../Skill/types"
+import { Employee } from "./types"
+
+export default defineComponent
+({
+    props:{employee:{type: Object as PropType<Employee>, required: true}},
+    data()
+    {
+        return {
+            selectedDepartment:{} as Department,
+            selectedSector:{} as Department,
+            selectedGroup:{} as Department,
+            department:{} as Department,
+            departmentList:[] as Array<Department>,
+            skill:{} as Skills,
+            skillList:[] as Array<Skills>,
+            index: 0 as number
+        }
+    },
+    methods:{
+        async loadDepartmentData(): Promise<void>
+        {
+            const response = await fetch(this.$store.state.backendPath +"Department/SendData")
+            const serverData = await response.json() 
+            this.departmentList = serverData;
+
+        },
+        
+        async getSkills(): Promise<void>
+        {
+            const response = await fetch(this.$store.state.backendPath +"Skill/SendData")
+            const serverData = await response.json() 
+            this.skillList = serverData;
+        },
+
+        async sendData(): Promise<void>
+        {
+            if ((this.employee.Full_name === "") || (this.department.Id === 0) || (this.employee.Skills === []))
             {
-                if ((this.employee.Full_name === "") || (this.department.Id === 0) || (this.employee.skillList === []))
+                this.$store.commit('setMessage', 'Заполните все поля!')
+            }
+            else
+            {
+                this.employee.Id_department = this.department.Id
+                const requestOptions = {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({employee: this.employee})
+                };
+                const response = await fetch(this.$store.state.backendPath +"Employee/Create", requestOptions)
+                this.employee.Id = await response.json();
+                if (response.status === 200)
                 {
-                    this.$store.commit('setMessage', 'Заполните все поля!')
+                    this.$emit('closeCreate')
                 }
                 else
                 {
-                    this.employee.Id_department = this.department.Id
-                    const requestOptions = {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({employee: this.employee})
-                    };
-                    const response = await fetch(this.$store.state.backendPath +"Employee/Create", requestOptions)
-                    this.employee.Id = await response.json();
-                    if (response.status === 200)
-                    {
-                        this.$emit('closeCreate')
-                    }
-                    else
-                    {
-                        this.$store.commit('setMessage', await response.json())
-                    }
+                    this.$store.commit('setMessage', await response.json())
                 }
+            }
 
-            },
-            
         },
-        beforeMount()
-        {
-            this.$store.dispatch('user/checkValidation', '/Employee/EmployeeForm');
-            this.loadDepartmentData();
-            this.getSkills();
-        }
+        
+    },
+    beforeMount()
+    {
+        
+        this.$store.dispatch('checkValidation', '/Employee/EmployeeForm');
+        this.loadDepartmentData();
+        this.getSkills();
     }
+})
 </script>

@@ -13,15 +13,20 @@
     </div>
 </form>
 </template>
-<script>
-export default {
+<script lang="ts">
+
+import { defineComponent } from "@vue/runtime-core"
+
+export default defineComponent
+({
     data() {
         return{
-            file:''
+            file:'' as string
         }
     },
+
     methods:{
-        async loadData()
+        async loadData(): Promise<void>
         {
             const response = await fetch(this.$store.state.backendPath +"FileWork/GetFile")
             if (response.status === 200)
@@ -34,7 +39,8 @@ export default {
                 this.file = 'Ошибка при загрузке файла'
             }
         },
-         async sendData()
+
+        async sendData(): Promise<void>
          {
             const requestOptions = {
                 method: "POST",
@@ -44,5 +50,5 @@ export default {
             fetch(this.$store.state.backendPath +"FileWork/SetFile", requestOptions)
         }
     }
-}
+})
 </script>

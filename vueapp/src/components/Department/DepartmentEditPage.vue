@@ -4,7 +4,7 @@
             <div class="form-horizontal">
                 <h2>Редактирование отдела</h2>
                 <hr />
-                <h3 style="warning" v-if="this.$store.state.messageVariable !== null">{{this.$store.state.messageVariable}}</h3>
+                <h3 style="warning" v-if="this.store.state.messageVariable !== null">{{this.store.state.messageVariable}}</h3>
                 <div class="form-group">
                     <label>Название: </label>
                     <input v-model="department.Name" :placeholder="department.Name">
@@ -47,42 +47,46 @@
     </div>  
 </template>
 
-<script>
-export default 
-    {
-        props: {department:Object},
+<script lang="ts">
 
-        data(){
-            return{
-                selectedSector:{},
-                selectedGroup:{}
-            }
-        },
+import {Department} from "@/components/Department/types"
+import { defineComponent, PropType } from "@vue/runtime-core"
 
-        methods:
-        {
-            async sendData()
-            {
-                const requestOptions = 
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ department: this.department})
-                };
-                const response = await fetch(this.$store.state.backendPath +"Department/Edit", requestOptions)
-                if (response.status === 200)
-                {
-                    this.$emit('closeEdit')
-                }
-                else
-                {
-                    this.$store.commit('setMessage', await response.json())
-                }
-            }
-        },
-        beforeMount()
-        {
-            this.$store.dispatch('user/checkValidation', '/Department/DepartmentForm')
+export default defineComponent
+({
+    props: {department:{type:Object as PropType<Department>, required: true}},
+
+    data(){
+        return{
+            selectedSector:{} as Department,
+            selectedGroup:{} as Department
         }
+    },
+
+    methods:
+    {
+        async sendData(): Promise<void>
+        {
+            const requestOptions = 
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ department: this.department})
+            };
+            const response = await fetch(this.$store.state.backendPath +"Department/Edit", requestOptions)
+            if (response.status === 200)
+            {
+                this.$emit('closeEdit')
+            }
+            else
+            {
+                this.$store.commit('setMessage', await response.json())
+            }
+        }
+    },
+    beforeMount()
+    {
+        this.$store.dispatch('checkValidation', '/Department/DepartmentForm')
     }
+})
 </script>

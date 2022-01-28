@@ -24,7 +24,7 @@ namespace AnReshWebApp.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> SendData(EmployeeFilterModel employeeFilterModel, int currentPage = 1, int rowPerPage = 10)
+        public async Task<JsonResult> SendData(EmployeeFilterModel employeeFilterModel, int currentPage = 1, int rowPerPage = 13)
         {
             EmployeeRepository.Filter = new EmployeeFilter(employeeFilterModel);
             EmployeeRepository.Paginator = new Paginator();

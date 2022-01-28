@@ -3,42 +3,39 @@
         <layout/>
     </div>
 </template>
-<script>
-import store from '@/store/index.js'
+<script lang = 'ts'>
+import { defineComponent } from 'vue'
 
-import SkillForm from '@/components/Skill/SkillForm.vue'
-import FileWork from '@/components/FileWork/FileWorkPage.vue'
+import Layout from "@/components/Navigation/Layout.vue"
+import DepartmentForm from "@/components/Department/DepartmentForm.vue"
+import EmployeeForm from "@/components/Employee/EmployeeForm.vue"
+import FileWorkPage from "@/components/FileWork/FileWorkPage.vue"
+import SkillForm from "@/components/Skill/SkillForm.vue"
+import Login from "@/components/User/Login.vue"
+import Registration from "@/components/User/Registration.vue"
+import { VueCookieNext } from 'vue-cookie-next'
 
-import DepartmentForm from '@/components/Department/DepartmentForm.vue'
-
-
-import EmployeeForm from '@/components/Employee/EmployeeForm.vue'
-
-
-import Login from '@/components/User/Login.vue'
-import LoginForm from '@/components/User/LoginForm.vue'
-import UserProfile from '@/components/User/UserProfile.vue'
-import Registration from '@/components/User/Registration.vue'
-
-import Layout from '@/components/Navigation/Layout.vue'
-
-import Multiselect from '@vueform/multiselect'
-Vue.component('multiselect', Multiselect)
-
-export default {
-    store:{
-        store
+export default defineComponent({
+    components:
+    {
+        Layout,
+        DepartmentForm,
+        EmployeeForm,
+        FileWorkPage,
+        SkillForm,
+        Login,
+        Registration
     },
-    components:{
-        Layout
-    },
-    beforeMount(){
-        if(this.$cookies.get('JWT') === null){
-            store.commit('user/logout')
+
+    beforeMount()
+    {
+        if(VueCookieNext.getCookie('JWT') === null){
+            this.$store.commit('logout')
+            
         } else {
-            store.commit('user/login')
+            this.$store.commit('login')
         }
     }
-} 
+})
 
 </script>

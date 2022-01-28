@@ -152,12 +152,17 @@
     </div>
 </template>
 
-<script>
+<script lang = 'ts'>
+
 import EmployeeCreationPage from '@/components/Employee/EmployeeCreationPage.vue'
 import EmployeeEditPage from '@/components/Employee/EmployeeEditPage.vue'
+import { defineComponent } from '@vue/runtime-core'
+import {Employee, EmployeeFilter, Paginator} from '@/components/Employee/types'
+import { Department } from '../Department/types'
+import {Skills} from '@/components/Skill/types'
 
-export default 
-{
+export default defineComponent
+({
     components:
     {
         EmployeeCreationPage,
@@ -166,42 +171,43 @@ export default
     data()
     {
         return{
-            showEdit: false,
-            showCreate: false,
-            filter:{Departments:[], Skills: []},
-            employee:{Skills: []},
-            department:{},
-            skill:{},
-            selectedDepartments:[],
-            sectorsToSelect:[],
-            selectedSectors:[],
-            groupsToSelect:[],
-            selectedGroups:[],
-            employeeList:[],
-            departmentList:[],
-            skillList:[],
-            currentPage:1,
-            pageList:[],
-            paginator:{},
-            index:Number
+            
+            showEdit: false as boolean,
+            showCreate: false as boolean,
+            filter:{} as EmployeeFilter,
+            employee:{} as Employee,
+            department:{} as Department,
+            skill:{} as Skills,
+            selectedDepartments:[] as Array<Department>,
+            sectorsToSelect:[] as Array<Department>,
+            selectedSectors:[] as Array<Department>,
+            groupsToSelect:[] as Array<Department>,
+            selectedGroups:[] as Array<Department>,
+            employeeList:[] as Array<Employee>,
+            departmentList:[] as Array<Department>,
+            skillList:[] as Array<Skills>,
+            currentPage:1 as number,
+            pageList:[] as Array<number>,
+            paginator:{} as Paginator,
+            index:0 as number
         }
     },
 
     methods: 
     {
-        closeCreate()
+        closeCreate(): void
         {
             this.showCreate = false
             this.loadData()
         },
 
-        closeEdit()
+        closeEdit(): void
         {
             this.showEdit = false
             this.loadData()
         },
 
-        setDepartmentsFilter(){
+        setDepartmentsFilter(): void {
             this.filter.Departments = [];
             this.sectorsToSelect = [];
             this.groupsToSelect = [];
@@ -220,7 +226,7 @@ export default
             this.loadData()
         },
         
-        setSectorsFilter()
+        setSectorsFilter(): void
         {
             this.filter.Departments = [];
             this.groupsToSelect = [];
@@ -235,7 +241,7 @@ export default
             this.loadData()
         },
 
-        setGroupsFilter()
+        setGroupsFilter(): void
         {
             this.filter.Departments = [];
             for(var i=0; i < this.selectedGroups.length; i++)
@@ -245,16 +251,16 @@ export default
             this.loadData()
         },
 
-        clearFilter()
+        clearFilter(): void
         {
             this.selectedDepartments = [];
             this.selectedSectors = [];
             this.selectedGroups = [];
-            this.filter = {Departments:[],Skills: []}; 
+            this.filter = {}; 
             this.loadData()
         },
 
-        async loadData()
+        async loadData(): Promise<void>
         { 
             var requestOptions = {
                 method: "POST",
@@ -263,13 +269,12 @@ export default
             };
             const response = await fetch(this.$store.state.backendPath +"Employee/SendData", requestOptions)
             const serverData = await response.json() 
-            console.log(serverData)
             this.employeeList = serverData.employeeList;
             this.paginator = serverData.Paginator;
             this.setPages();
         },
 
-        setPages()
+        setPages(): void
         {
             
             this.pageList = []
@@ -285,23 +290,23 @@ export default
             
         },
     
-        async getSkills()
+        async getSkills(): Promise<void>
         {
             const response = await fetch(this.$store.state.backendPath +"Skill/SendData")
             const serverData = await response.json() 
             this.skillList = serverData;
         },
 
-        async getDepartments()
+        async getDepartments(): Promise<void>
         {
             const response = await fetch(this.$store.state.backendPath +"Department/SendData")
             const serverData = await response.json() 
             this.departmentList = serverData;
         },
 
-        async deleteEmployee(employee){
-            this.$store.dispatch('user/checkValidation', '/Employee/EmployeeForm');
-            if (this.$store.state.user.logged === true)
+        async deleteEmployee(employee: Employee): Promise<void>  {
+            this.$store.dispatch('checkValidation', '/Employee/EmployeeForm');
+            if (this.$store.state.logged === true)
             {
                 const requestOptions = {
                     method: "POST",
@@ -332,5 +337,5 @@ export default
         this.getDepartments()
         this.loadData()
     }
-}
+})
 </script>

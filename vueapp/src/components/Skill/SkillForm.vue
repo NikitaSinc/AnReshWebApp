@@ -51,72 +51,74 @@
     </table>
 </template>
 
-<script>
-    import SkillCreationPage from '@/components/Skill/SkillCreationPage.vue'
-    import SkillEditPage from '@/components/Skill/SkillEditPage.vue'
+<script lang = "ts">
+
+import SkillCreationPage from '@/components/Skill/SkillCreationPage.vue'
+import SkillEditPage from '@/components/Skill/SkillEditPage.vue'
+import { defineComponent } from '@vue/runtime-core'
+import { Skills } from './types'
     
+export default defineComponent (
+{
+    components: { SkillCreationPage, SkillEditPage },
 
-    export default  
+    data()
     {
-        components: { SkillCreationPage, SkillEditPage },
+        return {
+            showEdit: false as boolean,
+            showCreate: false as boolean,
+            skill:{} as Skills,
+            skillList:[] as Array<Skills>
+        }
+    },
 
-        data()
+    methods: 
+    {
+        closeCreate(): void
         {
-            return {
-                showEdit: false,
-                showCreate: false,
-                skill:{},
-                skillList:[{}]
+            this.skillList.push(this.skill)
+            this.showCreate = false
+        },
+
+        closeEdit()
+        {
+            this.showEdit = false
+        },
+
+        async loadData(): Promise<void>
+        {
+            const response = await fetch(this.$store.state.backendPath +"Skill/SendData")
+            const serverData = await response.json() 
+            this.skillList = serverData;
+        },
+
+        async deleteSkill(skill : Skills): Promise<void>
+        {
+            this.$store.dispatch('user/checkValidation', '/Department/DepartmentForm');
+            if (this.$store.state.user.logged === true)
+            {
+                const requestOptions = {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({id: skill.Id})
+                };
+                const response = await fetch(this.$store.state.backendPath +"Skill/Delete", requestOptions)
+            
+                if (response.status === 200)
+                {
+                    this.skillList.splice(this.skillList.indexOf(skill))
+                }
+                else
+                {
+                    this.$store.commit('setMessage', await response.json())
+                }
             }
         },
+    },
+    mounted()
+    {
+        this.loadData()
+    },
 
-        methods: 
-        {
-            closeCreate()
-            {
-                this.skillList.push(this.skill)
-                this.showCreate = false
-            },
-
-            closeEdit()
-            {
-                this.showEdit = false
-            },
-
-            async loadData()
-            {
-                const response = await fetch(this.$store.state.backendPath +"Skill/SendData")
-                const serverData = await response.json() 
-                this.skillList = serverData;
-            },
-    
-            async deleteSkill(skill)
-            {
-                    this.$store.dispatch('user/checkValidation', '/Department/DepartmentForm');
-                    if (this.$store.state.user.logged === true)
-                    {
-                        const requestOptions = {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({id: skill.Id})
-                        };
-                        const response = await fetch(this.$store.state.backendPath +"Skill/Delete", requestOptions)
-                    
-                        if (response.status === 200)
-                        {
-                            this.skillList.splice(this.skillList.indexOf(skill))
-                        }
-                        else
-                        {
-                            this.$store.commit('setMessage', await response.json())
-                        }
-                    }
-            },
-        },
-        mounted()
-        {
-            this.loadData()
-        },
-
-    }
+})
 </script>

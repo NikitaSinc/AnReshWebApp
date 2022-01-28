@@ -19,34 +19,38 @@
     </div>  
 </template>
 
-<script>
-export default 
+<script lang="ts">
+
+import { defineComponent, PropType } from "@vue/runtime-core";
+import { Skills } from "./types";
+
+export default defineComponent
+({
+    props: {skill:{type: Object as PropType<Skills>, required:true}},
+    methods:
     {
-        props: {skill:Object},
-        methods:
+        async sendData(): Promise<void>
         {
-            async sendData()
+            const requestOptions = 
             {
-                const requestOptions = 
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ skill: this.skill})
-                };
-                const response = await fetch(this.$store.state.backendPath +"Skill/Edit", requestOptions)
-                if (response.status === 200)
-                {
-                    this.$emit('closeEdit')
-                }
-                else
-                {
-                    this.$store.commit('setMessage', await response.json())
-                }
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ skill: this.skill})
+            };
+            const response = await fetch(this.$store.state.backendPath +"Skill/Edit", requestOptions)
+            if (response.status === 200)
+            {
+                this.$emit('closeEdit')
             }
-        },
-        beforeMount()
-        {
-            this.$store.dispatch('user/checkValidation', '/Skill/SkillForm')
+            else
+            {
+                this.$store.commit('setMessage', await response.json())
+            }
         }
+    },
+    beforeMount()
+    {
+        this.$store.dispatch('user/checkValidation', '/Skill/SkillForm')
     }
+})
 </script>

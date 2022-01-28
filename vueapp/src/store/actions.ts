@@ -1,25 +1,39 @@
-import router from "../../router";
-import store from "../index.js";
+import { RootState } from "./state";
+import router from "../router";
+import { ActionTree } from "vuex";
 
-export default 
+enum ActionTypes {
+    goBack = "goBack",
+    checkValidation = "checkValidation"
+}
+
+export const rootActions : ActionTree<RootState, any> = 
 {
-    async checkValidation(context, route)
+    async [ActionTypes.goBack](store) : Promise<void>{
+        if (store.state.redirected === true) 
+        {
+            router.push(store.state.redirectRoute);
+            store.commit('unsetRedirectRoute')
+        }
+    },
+    
+    async [ActionTypes.checkValidation](store, route:string) : Promise<void>
     {
 
-        if (context.state.logged === true)
+        if (store.state.logged === true)
         {
             const requestOptions = {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
                 };
-            var response = await fetch(store.state.backendPath +"User/JWTCheck", requestOptions);
+            var response = await fetch(store.rootState.backendPath +"User/JWTCheck", requestOptions);
             if (response.status === 200)
             {
-                console.log('ok'); return true
+                console.log('ok');
             }
             else if (response.status === 401)
             { 
-            context.commit('logout')
+            store.commit('logout')
             store.commit('setMessage', 'Невалидный токен, войдите в аккаунт для продолжения')
             store.commit('setRedirectRoute', route)
             router.push('/User/Login');

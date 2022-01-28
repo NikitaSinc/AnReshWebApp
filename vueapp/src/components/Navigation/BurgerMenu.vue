@@ -15,12 +15,18 @@
         </ol>
     </nav>
 </template>
-<script>
-export default {
-    props:{
-        mobileSize:Boolean
+
+<script lang="ts">
+import { defineComponent, PropType } from "@vue/runtime-core"
+
+
+export default defineComponent
+({
+    props:
+    {
+        mobileSize:{type: Boolean as PropType<boolean>, required:true}
     }
-}
+})
 </script>
 
 <style lang="css">
